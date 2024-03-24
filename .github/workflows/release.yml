@@ -17,7 +17,6 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: ${{ github.ref }}
-        draft: true
 
     - uses: actions/checkout@v3
     - name: Set up Apache Maven Central
