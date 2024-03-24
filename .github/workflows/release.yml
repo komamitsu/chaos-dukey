@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PROJECT_ACCESS_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        draft: true
+
+    - uses: actions/checkout@v3
+    - name: Set up Apache Maven Central
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+
+    - name: Build a fat jar
+      run: ./gradlew shadowJar
+
+    - name: Upload the jar
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PROJECT_ACCESS_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/libs/chaos-dukey-${{ github.ref_name }}-all.jar
+        asset_name: chaos-dukey-${{ github.ref_name }}-all.jar
+        asset_content_type: application/java-archive
