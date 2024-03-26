@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "org.komamitsu"
-version = "1.0.0"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
@@ -14,6 +14,8 @@ dependencies {
     implementation("net.bytebuddy:byte-buddy:1.14.12")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.mockito:mockito-core:4.11.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:4.11.0")
 }
 
 tasks.getByName<Test>("test") {

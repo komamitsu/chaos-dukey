@@ -18,23 +18,28 @@ public class ChaosDukeyInterceptor {
         this.maxDelayMillis = maxDelayMillis;
     }
 
+    void waitRandomMillis() throws InterruptedException {
+        TimeUnit.MILLISECONDS.sleep(random.nextInt(maxDelayMillis));
+    }
+
     @RuntimeType
     public Object intercept(@SuperCall Callable<?> callable) throws Exception {
         if (random.nextInt(100) < percentage) {
+            boolean delayBeforeInvocation = random.nextBoolean();
+            if (delayBeforeInvocation) {
+                waitRandomMillis();
+            }
+
+            Object result = callable.call();
+
+            if (!delayBeforeInvocation) {
+                waitRandomMillis();
+            }
+
+            return result;
+        }
+        else {
             return callable.call();
         }
-
-        boolean delayBeforeInvocation = random.nextBoolean();
-        if (delayBeforeInvocation) {
-            TimeUnit.MILLISECONDS.sleep(random.nextInt(maxDelayMillis));
-        }
-
-        Object result = callable.call();
-
-        if (!delayBeforeInvocation) {
-            TimeUnit.MILLISECONDS.sleep(random.nextInt(maxDelayMillis));
-        }
-
-        return result;
     }
 }
