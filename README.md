@@ -19,7 +19,7 @@ Set `-javaagent` Java option to the downloaded JAR file with some parameters as 
 
 Example:
 ```
-$ java ... -javaagent:/path/to/chaos-dukey-x.x.x-all.jar=typeNamePattern=org.example.transaction.*,methodNamePattern=.*Update,percentage=15,maxDelayMillis=250
+$ java ... -javaagent:/path/to/chaos-dukey-x.x.x-all.jar=typeNamePattern=org\.example\.transaction\.*,methodNamePattern=.*Update,percentage=15,maxDelayMillis=250
 ```
 
 ## Note
