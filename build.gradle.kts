@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.diffplug.spotless") version "6.13.0"
 }
 
 group = "org.komamitsu"
@@ -25,5 +26,14 @@ tasks.getByName<Test>("test") {
 tasks.jar {
     manifest {
         attributes(mapOf("Premain-Class" to "org.komamitsu.chaosdukey.ChaosDukeyAgent"))
+    }
+}
+
+spotless {
+    java {
+        target("src/*/java/**/*.java")
+        importOrder()
+        removeUnusedImports()
+        googleJavaFormat()
     }
 }
