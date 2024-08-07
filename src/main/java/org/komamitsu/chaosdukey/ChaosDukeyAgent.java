@@ -100,8 +100,7 @@ public class ChaosDukeyAgent {
       }
     }
 
-    return new ChaosDukeyAgent(
-        typeMatcher, methodMatcher, waitMode, ppm, maxDelayMillis, debug);
+    return new ChaosDukeyAgent(typeMatcher, methodMatcher, waitMode, ppm, maxDelayMillis, debug);
   }
 
   public static void premain(String arguments, Instrumentation instrumentation) {

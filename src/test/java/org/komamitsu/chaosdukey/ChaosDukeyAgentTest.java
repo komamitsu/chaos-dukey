@@ -46,6 +46,8 @@ class ChaosDukeyAgentTest {
 
   @Test
   void parseArguments_GivenBothPpmAndPercentage_ShouldThrowException() {
-    assertThrows(IllegalArgumentException.class, () -> ChaosDukeyAgent.parseArguments("ppm=42,percentage=42"));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> ChaosDukeyAgent.parseArguments("ppm=42,percentage=42"));
   }
 }
