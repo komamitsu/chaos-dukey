@@ -13,34 +13,39 @@ class ChaosDukeyAgentTest {
     assertEquals(ElementMatchers.any(), agent.typeMatcher);
     assertEquals(ElementMatchers.any(), agent.methodMatcher);
     assertEquals(ChaosDukeyAgent.DEFAULT_WAIT_MODE, agent.waitMode);
-    assertEquals(ChaosDukeyAgent.DEFAULT_PERCENTAGE, agent.percentage);
+    assertEquals(ChaosDukeyAgent.DEFAULT_PPM, agent.ppm);
     assertEquals(ChaosDukeyAgent.DEFAULT_MAX_DELAY_MILLIS, agent.maxDelayMillis);
     assertEquals(false, agent.debug);
   }
 
   @Test
-  void parseArguments_GivenSpecifiedParametersIncludingRandomWaitMode_ShouldUseThem() {
+  void parseArguments_GivenSpecifiedParametersIncludingRandomWaitModeAndPercentage_ShouldUseThem() {
     ChaosDukeyAgent agent =
         ChaosDukeyAgent.parseArguments(
             "typeNamePattern=typepattern, methodNamePattern = methodpattern ,waitMode=RANDOM,percentage=42,  maxDelayMillis=1234, debug = false");
     assertEquals(ElementMatchers.nameMatches("typepattern"), agent.typeMatcher);
     assertEquals(ElementMatchers.nameMatches("methodpattern"), agent.methodMatcher);
     assertEquals(ChaosDukeyInterceptor.WaitMode.RANDOM, agent.waitMode);
-    assertEquals(42, agent.percentage);
+    assertEquals(420000, agent.ppm);
     assertEquals(1234, agent.maxDelayMillis);
     assertFalse(agent.debug);
   }
 
   @Test
-  void parseArguments_GivenSpecifiedParametersIncludingFixedWaitMode_ShouldUseThem() {
+  void parseArguments_GivenSpecifiedParametersIncludingFixedWaitModeAndPpm_ShouldUseThem() {
     ChaosDukeyAgent agent =
         ChaosDukeyAgent.parseArguments(
-            "typeNamePattern=typepattern, methodNamePattern = methodpattern ,waitMode=FIXED,percentage=42,  maxDelayMillis=1234, debug = true");
+            "typeNamePattern=typepattern, methodNamePattern = methodpattern ,waitMode=FIXED,ppm=42,  maxDelayMillis=1234, debug = true");
     assertEquals(ElementMatchers.nameMatches("typepattern"), agent.typeMatcher);
     assertEquals(ElementMatchers.nameMatches("methodpattern"), agent.methodMatcher);
     assertEquals(ChaosDukeyInterceptor.WaitMode.FIXED, agent.waitMode);
-    assertEquals(42, agent.percentage);
+    assertEquals(42, agent.ppm);
     assertEquals(1234, agent.maxDelayMillis);
     assertTrue(agent.debug);
+  }
+
+  @Test
+  void parseArguments_GivenBothPpmAndPercentage_ShouldThrowException() {
+    assertThrows(IllegalArgumentException.class, () -> ChaosDukeyAgent.parseArguments("ppm=42,percentage=42"));
   }
 }

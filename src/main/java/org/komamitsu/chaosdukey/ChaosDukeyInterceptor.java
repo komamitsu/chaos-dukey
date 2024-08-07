@@ -11,7 +11,7 @@ public class ChaosDukeyInterceptor {
   private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
   private final WaitMode waitMode;
-  private final int percentage;
+  private final long ppm;
   private final int maxDelayMillis;
 
   enum WaitMode {
@@ -19,9 +19,9 @@ public class ChaosDukeyInterceptor {
     RANDOM;
   }
 
-  public ChaosDukeyInterceptor(WaitMode waitMode, int percentage, int maxDelayMillis) {
+  public ChaosDukeyInterceptor(WaitMode waitMode, long ppm, int maxDelayMillis) {
     this.waitMode = waitMode;
-    this.percentage = percentage;
+    this.ppm = ppm;
     this.maxDelayMillis = maxDelayMillis;
   }
 
@@ -46,7 +46,7 @@ public class ChaosDukeyInterceptor {
 
   @RuntimeType
   public Object intercept(@SuperCall Callable<?> callable) throws Exception {
-    if (random.nextInt(100) < percentage) {
+    if (random.nextLong(1000000) < ppm) {
       boolean delayBeforeInvocation = random.nextBoolean();
       if (delayBeforeInvocation) {
         waitForDelay();
