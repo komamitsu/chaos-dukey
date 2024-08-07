@@ -11,12 +11,13 @@ import net.bytebuddy.matcher.ElementMatchers;
 public class ChaosDukeyAgent {
   static final ChaosDukeyInterceptor.WaitMode DEFAULT_WAIT_MODE =
       ChaosDukeyInterceptor.WaitMode.RANDOM;
-  static final int DEFAULT_PERCENTAGE = 5;
+  // 0.1%
+  static final int DEFAULT_PPM = 1000;
   static final int DEFAULT_MAX_DELAY_MILLIS = 100;
   final ElementMatcher<TypeDefinition> typeMatcher;
   final ElementMatcher<MethodDescription> methodMatcher;
   final ChaosDukeyInterceptor.WaitMode waitMode;
-  final int percentage;
+  final long ppm;
   final int maxDelayMillis;
   final boolean debug;
 
@@ -24,14 +25,14 @@ public class ChaosDukeyAgent {
       ElementMatcher<TypeDefinition> typeMatcher,
       ElementMatcher<MethodDescription> methodMatcher,
       ChaosDukeyInterceptor.WaitMode waitMode,
-      int percentage,
+      long ppm,
       int maxDelayMillis,
       boolean debug) {
 
     this.typeMatcher = typeMatcher;
     this.methodMatcher = methodMatcher;
     this.waitMode = waitMode;
-    this.percentage = percentage;
+    this.ppm = ppm;
     this.maxDelayMillis = maxDelayMillis;
     this.debug = debug;
   }
@@ -45,8 +46,8 @@ public class ChaosDukeyAgent {
         + methodMatcher
         + ", waitMode="
         + waitMode
-        + ", percentage="
-        + percentage
+        + ", ppm="
+        + ppm
         + ", maxDelayMillis="
         + maxDelayMillis
         + ", debug="
@@ -58,9 +59,11 @@ public class ChaosDukeyAgent {
     ElementMatcher<TypeDefinition> typeMatcher = ElementMatchers.any();
     ElementMatcher<MethodDescription> methodMatcher = ElementMatchers.any();
     ChaosDukeyInterceptor.WaitMode waitMode = DEFAULT_WAIT_MODE;
-    int percentage = DEFAULT_PERCENTAGE;
+    long ppm = DEFAULT_PPM;
     int maxDelayMillis = DEFAULT_MAX_DELAY_MILLIS;
     boolean debug = false;
+    boolean hasPpm = false;
+    boolean hasPercentage = false;
 
     if (arguments != null) {
       for (String kv : arguments.split(",")) {
@@ -74,8 +77,18 @@ public class ChaosDukeyAgent {
             methodMatcher = ElementMatchers.nameMatches(v);
           } else if (k.equals("waitMode")) {
             waitMode = ChaosDukeyInterceptor.WaitMode.valueOf(v);
+          } else if (k.equals("ppm")) {
+            if (hasPercentage) {
+              throw new IllegalArgumentException("`ppm` and `percentage` can't be specified");
+            }
+            ppm = Long.parseLong(v);
+            hasPpm = true;
           } else if (k.equals("percentage")) {
-            percentage = Integer.parseInt(v);
+            if (hasPpm) {
+              throw new IllegalArgumentException("`ppm` and `percentage` can't be specified");
+            }
+            ppm = Integer.parseInt(v) * 10000L;
+            hasPercentage = true;
           } else if (k.equals("maxDelayMillis")) {
             maxDelayMillis = Integer.parseInt(v);
           } else if (k.equals("debug")) {
@@ -87,15 +100,14 @@ public class ChaosDukeyAgent {
       }
     }
 
-    return new ChaosDukeyAgent(
-        typeMatcher, methodMatcher, waitMode, percentage, maxDelayMillis, debug);
+    return new ChaosDukeyAgent(typeMatcher, methodMatcher, waitMode, ppm, maxDelayMillis, debug);
   }
 
   public static void premain(String arguments, Instrumentation instrumentation) {
     ChaosDukeyAgent agent = parseArguments(arguments);
 
     ChaosDukeyInterceptor interceptor =
-        new ChaosDukeyInterceptor(agent.waitMode, agent.percentage, agent.maxDelayMillis);
+        new ChaosDukeyInterceptor(agent.waitMode, agent.ppm, agent.maxDelayMillis);
     AgentBuilder agentBuilder =
         new AgentBuilder.Default()
             .type(agent.typeMatcher)

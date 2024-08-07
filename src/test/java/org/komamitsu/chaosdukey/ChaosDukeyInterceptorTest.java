@@ -43,7 +43,7 @@ class ChaosDukeyInterceptorTest {
   @Test
   void waitForDelay_GivenRandomWaitMode_ShouldRandomlyWait() throws InterruptedException {
     ChaosDukeyInterceptor interceptor =
-        spy(new ChaosDukeyInterceptor(ChaosDukeyInterceptor.WaitMode.RANDOM, 100, 100));
+        spy(new ChaosDukeyInterceptor(ChaosDukeyInterceptor.WaitMode.RANDOM, 1000000, 100));
     doNothing().when(interceptor).waitForDuration(anyInt());
     int n = 1000;
     for (int i = 0; i < n; i++) {
@@ -60,7 +60,7 @@ class ChaosDukeyInterceptorTest {
   @Test
   void waitForDelay_GivenFixedWaitMode_ShouldFixedlyWait() throws InterruptedException {
     ChaosDukeyInterceptor interceptor =
-        spy(new ChaosDukeyInterceptor(ChaosDukeyInterceptor.WaitMode.FIXED, 100, 100));
+        spy(new ChaosDukeyInterceptor(ChaosDukeyInterceptor.WaitMode.FIXED, 1000000, 100));
     doNothing().when(interceptor).waitForDuration(anyInt());
     int n = 1000;
     for (int i = 0; i < n; i++) {
@@ -91,7 +91,7 @@ class ChaosDukeyInterceptorTest {
   @EnumSource(ChaosDukeyInterceptor.WaitMode.class)
   void intercept_WithOneHundredPercentage_ShouldAlwaysWait(ChaosDukeyInterceptor.WaitMode waitMode)
       throws Exception {
-    ChaosDukeyInterceptor interceptor = spy(new ChaosDukeyInterceptor(waitMode, 100, 1000));
+    ChaosDukeyInterceptor interceptor = spy(new ChaosDukeyInterceptor(waitMode, 1000000, 1000));
     doNothing().when(interceptor).waitForDelay();
     int n = 1000;
     for (int i = 0; i < n; i++) {

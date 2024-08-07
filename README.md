@@ -10,18 +10,19 @@ Download the latest JAR file `chaos-dukey-<VERSION>-all.jar` from https://github
 
 Set `-javaagent` Java option to the downloaded JAR file with some parameters as follows.
 
-| Parameter           | Description                                                                                                | Default value            |
-|---------------------|------------------------------------------------------------------------------------------------------------|--------------------------|
-| `typeNamePattern`   | Type name pattern to filter effected classes and interfaces. Java's regex format is supported.             | All types are effected   |
-| `methodNamePattern` | Method name pattern to filter effected methods. Java's regex format is supported.                          | All methods are effected |
-| `waitMode`          | `RANDOM`: waits for random duration between 1 ms and `maxDelayMillis`. `FIXED`: waits for `maxDelayMillis` | `RANDOM`                 |
-| `percentage`        | Percentage that a delay injection occurs.                                                                  | 5 %                      |
-| `maxDelayMillis`    | Maximum delay in millis. An actual delay is randomly decided up to the maximum.                            | 100 ms                   |
-| `debug`             | Whether to output debug information.                                                                       | `false`                  |
+| Parameter           | Description                                                                                                 | Default value            |
+|---------------------|-------------------------------------------------------------------------------------------------------------|--------------------------|
+| `typeNamePattern`   | Type name pattern to filter classes and interfaces. Java's regex format is supported.                       | All types are effected   |
+| `methodNamePattern` | Method name pattern to filter methods. Java's regex format is supported.                                    | All methods are effected |
+| `waitMode`          | `RANDOM`: waits for random duration between 1 ms and `maxDelayMillis`. `FIXED`: waits for `maxDelayMillis`. | `RANDOM`                 |
+| `ppm`               | Parts per million (ppm) chance that a delay injection occurs. This can't be specified with `percentage`.    | 1000 ppm (0.1 %)         |
+| `percentage`        | Percentage chance that a delay injection occurs. This can't be specified with `ppm`.                        | 0.1 % (1000 ppm)         |
+| `maxDelayMillis`    | Maximum delay in millis. An actual delay is randomly decided up to the maximum.                             | 100 ms                   |
+| `debug`             | Whether to output debug information.                                                                        | `false`                  |
 
 Example:
 ```
-$ java ... -javaagent:/path/to/chaos-dukey-x.x.x-all.jar=typeNamePattern=^org\.example\.transaction\.(?:Foo|Bar),methodNamePattern=.*Update,waitMode=FIXED,percentage=15,maxDelayMillis=250
+$ java ... -javaagent:/path/to/chaos-dukey-x.x.x-all.jar=typeNamePattern=^org\.example\.transaction\.(?:Foo|Bar),methodNamePattern=.*Update,waitMode=FIXED,ppm=2000,maxDelayMillis=250
 ```
 
 ## Note
