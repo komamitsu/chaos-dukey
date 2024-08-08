@@ -13,16 +13,18 @@ public class ChaosDukeyInterceptor {
   private final WaitMode waitMode;
   private final long ppm;
   private final int maxDelayMillis;
+  private final boolean debug;
 
   enum WaitMode {
     FIXED,
     RANDOM;
   }
 
-  public ChaosDukeyInterceptor(WaitMode waitMode, long ppm, int maxDelayMillis) {
+  public ChaosDukeyInterceptor(WaitMode waitMode, long ppm, int maxDelayMillis, boolean debug) {
     this.waitMode = waitMode;
     this.ppm = ppm;
     this.maxDelayMillis = maxDelayMillis;
+    this.debug = debug;
   }
 
   void waitForDelay() throws InterruptedException {
@@ -49,12 +51,18 @@ public class ChaosDukeyInterceptor {
     if (random.nextLong(1000000) < ppm) {
       boolean delayBeforeInvocation = random.nextBoolean();
       if (delayBeforeInvocation) {
+        if (debug) {
+          System.err.println("[Chaos-Dukey] Waiting before the target method invocation.");
+        }
         waitForDelay();
       }
 
       Object result = callable.call();
 
       if (!delayBeforeInvocation) {
+        if (debug) {
+          System.err.println("[Chaos-Dukey] Waiting after the target method invocation.");
+        }
         waitForDelay();
       }
 
