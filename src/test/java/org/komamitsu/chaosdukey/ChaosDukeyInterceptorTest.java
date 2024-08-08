@@ -91,7 +91,8 @@ class ChaosDukeyInterceptorTest {
   @EnumSource(ChaosDukeyInterceptor.WaitMode.class)
   void intercept_WithOneHundredPercentage_ShouldAlwaysWait(ChaosDukeyInterceptor.WaitMode waitMode)
       throws Exception {
-    ChaosDukeyInterceptor interceptor = spy(new ChaosDukeyInterceptor(waitMode, 1000000, 1000, true));
+    ChaosDukeyInterceptor interceptor =
+        spy(new ChaosDukeyInterceptor(waitMode, 1000000, 1000, true));
     doNothing().when(interceptor).waitForDelay();
     int n = 1000;
     for (int i = 0; i < n; i++) {
