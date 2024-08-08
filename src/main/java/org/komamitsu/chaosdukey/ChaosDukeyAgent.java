@@ -11,8 +11,8 @@ import net.bytebuddy.matcher.ElementMatchers;
 public class ChaosDukeyAgent {
   static final ChaosDukeyInterceptor.WaitMode DEFAULT_WAIT_MODE =
       ChaosDukeyInterceptor.WaitMode.RANDOM;
-  // 0.1%
-  static final int DEFAULT_PPM = 1000;
+  // 2%
+  static final int DEFAULT_PPM = 20000;
   static final int DEFAULT_MAX_DELAY_MILLIS = 100;
   final ElementMatcher<TypeDefinition> typeMatcher;
   final ElementMatcher<MethodDescription> methodMatcher;

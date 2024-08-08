@@ -15,8 +15,8 @@ Set `-javaagent` Java option to the downloaded JAR file with some parameters as 
 | `typeNamePattern`   | Type name pattern to filter classes and interfaces. Java's regex format is supported.                       | All types are effected   |
 | `methodNamePattern` | Method name pattern to filter methods. Java's regex format is supported.                                    | All methods are effected |
 | `waitMode`          | `RANDOM`: waits for random duration between 1 ms and `maxDelayMillis`. `FIXED`: waits for `maxDelayMillis`. | `RANDOM`                 |
-| `ppm`               | Parts per million (ppm) chance that a delay injection occurs. This can't be specified with `percentage`.    | 1000 ppm (0.1 %)         |
-| `percentage`        | Percentage chance that a delay injection occurs. This can't be specified with `ppm`.                        | 0.1 % (1000 ppm)         |
+| `ppm`               | Parts per million (ppm) chance that a delay injection occurs. This can't be specified with `percentage`.    | 20000 ppm (2%)           |
+| `percentage`        | Percentage chance that a delay injection occurs. This can't be specified with `ppm`.                        | 2% (20000 ppm)           |
 | `maxDelayMillis`    | Maximum delay in millis. An actual delay is randomly decided up to the maximum.                             | 100 ms                   |
 | `debug`             | Whether to output debug information.                                                                        | `false`                  |
 
