@@ -13,7 +13,7 @@ public class ChaosDukeyAgent {
       ChaosDukeyInterceptor.WaitMode.RANDOM;
   // 2%
   static final int DEFAULT_PPM = 20000;
-  static final int DEFAULT_MAX_DELAY_MILLIS = 100;
+  static final int DEFAULT_MAX_DELAY_MILLIS = 500;
   final ElementMatcher<TypeDefinition> typeMatcher;
   final ElementMatcher<MethodDescription> methodMatcher;
   final ChaosDukeyInterceptor.WaitMode waitMode;
