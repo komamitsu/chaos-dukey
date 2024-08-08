@@ -18,7 +18,7 @@ Set `-javaagent` Java option to the downloaded JAR file with some parameters as 
 | `ppm`               | Parts per million (ppm) chance that a delay injection occurs. This can't be specified with `percentage`.    | 20000 ppm (2%)           |
 | `percentage`        | Percentage chance that a delay injection occurs. This can't be specified with `ppm`.                        | 2% (20000 ppm)           |
 | `maxDelayMillis`    | Maximum delay in millis.                                                                                    | 500 ms                   |
-| `debug`             | Whether to output debug information.                                                                        | `false`                  |
+| `debug`             | Whether to output debug information to STDERR.                                                              | `false`                  |
 
 Example:
 ```

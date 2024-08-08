@@ -107,7 +107,7 @@ public class ChaosDukeyAgent {
     ChaosDukeyAgent agent = parseArguments(arguments);
 
     ChaosDukeyInterceptor interceptor =
-        new ChaosDukeyInterceptor(agent.waitMode, agent.ppm, agent.maxDelayMillis);
+        new ChaosDukeyInterceptor(agent.waitMode, agent.ppm, agent.maxDelayMillis, agent.debug);
     AgentBuilder agentBuilder =
         new AgentBuilder.Default()
             .type(agent.typeMatcher)
@@ -117,7 +117,7 @@ public class ChaosDukeyAgent {
                         .method(agent.methodMatcher)
                         .intercept(MethodDelegation.to(interceptor)));
     if (agent.debug) {
-      agentBuilder = agentBuilder.with(AgentBuilder.Listener.StreamWriting.toSystemOut());
+      agentBuilder = agentBuilder.with(AgentBuilder.Listener.StreamWriting.toSystemError());
     }
 
     agentBuilder.installOn(instrumentation);
