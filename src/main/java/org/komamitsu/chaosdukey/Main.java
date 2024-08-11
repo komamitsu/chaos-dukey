@@ -29,9 +29,7 @@ public final class Main {
   public static void premain(String arguments, Instrumentation instrumentation) throws IOException {
     Config config= configFromArguments(arguments);
 
-    Interceptor interceptor =
-        new Interceptor(
-            config.delayConfig.waitMode, config.delayConfig.ppm, config.delayConfig.maxDelayMillis, config.debug);
+    Interceptor interceptor = new Interceptor(config);
     AgentBuilder agentBuilder =
         new AgentBuilder.Default()
             .type(config.delayConfig.typeMatcher)

@@ -22,8 +22,7 @@ class InterceptorTest {
 
   @Test
   void waitForDuration_GivenArbitraryValue_ShouldWaitProperly() throws InterruptedException {
-    Interceptor interceptor =
-        new Interceptor(Interceptor.WaitMode.RANDOM, 0, 0, true);
+    Interceptor interceptor = new Interceptor(new Config(new Config.DelayConfig.Builder().build(), true));
     {
       long start = System.currentTimeMillis();
       interceptor.waitForDuration(0);
@@ -42,8 +41,16 @@ class InterceptorTest {
 
   @Test
   void waitForDelay_GivenRandomWaitMode_ShouldRandomlyWait() throws InterruptedException {
-    Interceptor interceptor =
-        spy(new Interceptor(Interceptor.WaitMode.RANDOM, 1000000, 100, true));
+    Interceptor interceptor = spy(
+            new Interceptor(
+                    new Config(
+                            new Config.DelayConfig.Builder()
+                                    .setEnabled(true)
+                                    .setWaitMode(Interceptor.WaitMode.RANDOM)
+                                    .setMaxDelayMillis(100)
+                                    .setPercentage(100)
+                                    .build(),
+                            true)));
     doNothing().when(interceptor).waitForDuration(anyInt());
     int n = 1000;
     for (int i = 0; i < n; i++) {
@@ -59,8 +66,16 @@ class InterceptorTest {
 
   @Test
   void waitForDelay_GivenFixedWaitMode_ShouldFixedlyWait() throws InterruptedException {
-    Interceptor interceptor =
-        spy(new Interceptor(Interceptor.WaitMode.FIXED, 1000000, 100, true));
+    Interceptor interceptor = spy(
+            new Interceptor(
+                    new Config(
+                            new Config.DelayConfig.Builder()
+                                    .setEnabled(true)
+                                    .setWaitMode(Interceptor.WaitMode.FIXED)
+                                    .setMaxDelayMillis(100)
+                                    .setPercentage(100)
+                                    .build(),
+                            true)));
     doNothing().when(interceptor).waitForDuration(anyInt());
     int n = 1000;
     for (int i = 0; i < n; i++) {
@@ -78,7 +93,16 @@ class InterceptorTest {
   @EnumSource(Interceptor.WaitMode.class)
   void intercept_WithZeroPercentage_ShouldNotWait(Interceptor.WaitMode waitMode)
       throws Exception {
-    Interceptor interceptor = spy(new Interceptor(waitMode, 0, 1000, true));
+    Interceptor interceptor = spy(
+            new Interceptor(
+                    new Config(
+                            new Config.DelayConfig.Builder()
+                                    .setEnabled(true)
+                                    .setWaitMode(waitMode)
+                                    .setMaxDelayMillis(1000)
+                                    .setPercentage(0)
+                                    .build(),
+                            true)));
     int n = 1000;
     for (int i = 0; i < n; i++) {
       interceptor.intercept(callable);
@@ -91,8 +115,16 @@ class InterceptorTest {
   @EnumSource(Interceptor.WaitMode.class)
   void intercept_WithOneHundredPercentage_ShouldAlwaysWait(Interceptor.WaitMode waitMode)
       throws Exception {
-    Interceptor interceptor =
-        spy(new Interceptor(waitMode, 1000000, 1000, true));
+    Interceptor interceptor = spy(
+            new Interceptor(
+                    new Config(
+                            new Config.DelayConfig.Builder()
+                                    .setEnabled(true)
+                                    .setWaitMode(waitMode)
+                                    .setMaxDelayMillis(1000)
+                                    .setPercentage(100)
+                                    .build(),
+                            true)));
     doNothing().when(interceptor).waitForDelay();
     int n = 1000;
     for (int i = 0; i < n; i++) {

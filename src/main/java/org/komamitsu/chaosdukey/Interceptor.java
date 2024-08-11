@@ -10,31 +10,25 @@ import net.bytebuddy.implementation.bind.annotation.SuperCall;
 public class Interceptor {
   private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
-  private final WaitMode waitMode;
-  private final long ppm;
-  private final int maxDelayMillis;
-  private final boolean debug;
+  private final Config config;
 
   enum WaitMode {
     FIXED,
     RANDOM;
   }
 
-  public Interceptor(WaitMode waitMode, long ppm, int maxDelayMillis, boolean debug) {
-    this.waitMode = waitMode;
-    this.ppm = ppm;
-    this.maxDelayMillis = maxDelayMillis;
-    this.debug = debug;
+  public Interceptor(Config config) {
+    this.config = config;
   }
 
   void waitForDelay() throws InterruptedException {
     int durationMillis;
-    switch (waitMode) {
+    switch (config.delayConfig.waitMode) {
       case FIXED:
-        durationMillis = maxDelayMillis;
+        durationMillis = config.delayConfig.maxDelayMillis;
         break;
       case RANDOM:
-        durationMillis = random.nextInt(maxDelayMillis) + 1;
+        durationMillis = random.nextInt(config.delayConfig.maxDelayMillis) + 1;
         break;
       default:
         throw new AssertionError("Shouldn't reach here");
@@ -48,10 +42,10 @@ public class Interceptor {
 
   @RuntimeType
   public Object intercept(@SuperCall Callable<?> callable) throws Exception {
-    if (random.nextLong(1000000) < ppm) {
+    if (random.nextLong(1000000) < config.delayConfig.ppm) {
       boolean delayBeforeInvocation = random.nextBoolean();
       if (delayBeforeInvocation) {
-        if (debug) {
+        if (config.debug) {
           System.err.println("[Chaos-Dukey] Waiting before the target method invocation.");
         }
         waitForDelay();
@@ -60,7 +54,7 @@ public class Interceptor {
       Object result = callable.call();
 
       if (!delayBeforeInvocation) {
-        if (debug) {
+        if (config.debug) {
           System.err.println("[Chaos-Dukey] Waiting after the target method invocation.");
         }
         waitForDelay();
