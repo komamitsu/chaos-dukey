@@ -26,7 +26,7 @@ tasks.getByName<Test>("test") {
 
 tasks.jar {
     manifest {
-        attributes(mapOf("Premain-Class" to "org.komamitsu.chaosdukey.ChaosDukeyAgent"))
+        attributes(mapOf("Premain-Class" to "org.komamitsu.chaosdukey.Main"))
     }
 }
 
@@ -37,4 +37,39 @@ spotless {
         removeUnusedImports()
         googleJavaFormat()
     }
+}
+
+sourceSets {
+    create("intTest") {
+        compileClasspath += sourceSets.main.get().output
+        runtimeClasspath += sourceSets.main.get().output
+    }
+}
+
+val intTestImplementation by configurations.getting {
+    extendsFrom(configurations.implementation.get())
+}
+val intTestRuntimeOnly by configurations.getting
+
+configurations["intTestRuntimeOnly"].extendsFrom(configurations.runtimeOnly.get())
+
+dependencies {
+    intTestImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    intTestRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+val integrationTest = task<Test>("integrationTest") {
+    description = "Runs integration tests."
+    group = "verification"
+
+    testClassesDirs = sourceSets["intTest"].output.classesDirs
+    classpath = sourceSets["intTest"].runtimeClasspath
+
+    dependsOn("shadowJar")
+
+    useJUnitPlatform()
+
+    // FIXME
+    // jvmArgs("-javaagent:build/libs/${project.name}-${project.version}-all.jar=configFile=chaos-dukey.properties")
+    jvmArgs("-javaagent:build/libs/${project.name}-${project.version}-all.jar=configFile=src/intTest/resources/chaos-dukey.properties")
 }

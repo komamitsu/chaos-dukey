@@ -46,7 +46,7 @@ class Config {
     }
   }
   static class Loader {
-    private static final String PROP_NAME_CONFIG_PATH = "configPath";
+    private static final String PROP_NAME_CONFIG_FILE = "configFile";
     private final Map<String, Consumer<String>> propertyHandlers = new HashMap<>();
     private final Config.Builder chaosConfigBuilder = new Config.Builder();
     private final DelayConfig.Builder delayConfigBuilder = new DelayConfig.Builder();
@@ -64,12 +64,12 @@ class Config {
 
     Config load(Properties origProperties) throws IOException {
       Properties properties;
-      String configPath = origProperties.getProperty(PROP_NAME_CONFIG_PATH);
+      String configPath = origProperties.getProperty(PROP_NAME_CONFIG_FILE);
       if (configPath != null) {
         properties = new Properties();
         try (FileInputStream fio = new FileInputStream(configPath)) {
           properties.load(fio);
-          properties.remove(PROP_NAME_CONFIG_PATH);
+          properties.remove(PROP_NAME_CONFIG_FILE);
         }
       }
       else {
