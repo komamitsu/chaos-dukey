@@ -8,7 +8,7 @@ import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.implementation.MethodDelegation;
 
 public final class Main {
-  static ChaosDukeyConfig configFromArguments(String arguments) throws IOException {
+  static Config configFromArguments(String arguments) throws IOException {
     Properties properties = new Properties();
     if (arguments != null) {
       for (String kv : arguments.split(",")) {
@@ -23,14 +23,14 @@ public final class Main {
         }
       }
     }
-    return new ChaosDukeyConfig.Loader().load(properties);
+    return new Config.Loader().load(properties);
   }
 
   public static void premain(String arguments, Instrumentation instrumentation) throws IOException {
-    ChaosDukeyConfig config= configFromArguments(arguments);
+    Config config= configFromArguments(arguments);
 
-    ChaosDukeyInterceptor interceptor =
-        new ChaosDukeyInterceptor(
+    Interceptor interceptor =
+        new Interceptor(
             config.delayConfig.waitMode, config.delayConfig.ppm, config.delayConfig.maxDelayMillis, config.debug);
     AgentBuilder agentBuilder =
         new AgentBuilder.Default()

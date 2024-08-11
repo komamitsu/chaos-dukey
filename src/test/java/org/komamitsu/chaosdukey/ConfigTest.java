@@ -8,16 +8,16 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Properties;
 
-class ChaosDukeyConfigTest {
+class ConfigTest {
 
   @Test
   void parseArguments_GivenEmptyString_ShouldUseDefaultValues() throws IOException {
     Properties properties = new Properties();
-    ChaosDukeyConfig config = new ChaosDukeyConfig.Loader().load(properties);
+    Config config = new Config.Loader().load(properties);
     assertFalse(config.delayConfig.enabled);
     assertEquals(ElementMatchers.any(), config.delayConfig.typeMatcher);
     assertEquals(ElementMatchers.any(), config.delayConfig.methodMatcher);
-    assertEquals(ChaosDukeyInterceptor.WaitMode.RANDOM, config.delayConfig.waitMode);
+    assertEquals(Interceptor.WaitMode.RANDOM, config.delayConfig.waitMode);
     assertEquals(20000L, config.delayConfig.ppm);
     assertEquals(500, config.delayConfig.maxDelayMillis);
     assertFalse(config.debug);
@@ -34,11 +34,11 @@ class ChaosDukeyConfigTest {
     properties.put("delay.maxDelayMillis", "1234");
     properties.put("debug", "false");
 
-    ChaosDukeyConfig config = new ChaosDukeyConfig.Loader().load(properties);
+    Config config = new Config.Loader().load(properties);
     assertTrue(config.delayConfig.enabled);
     assertEquals(ElementMatchers.nameMatches("^abc.def.MyClass$"), config.delayConfig.typeMatcher);
     assertEquals(ElementMatchers.nameMatches("^myMethod$"), config.delayConfig.methodMatcher);
-    assertEquals(ChaosDukeyInterceptor.WaitMode.RANDOM, config.delayConfig.waitMode);
+    assertEquals(Interceptor.WaitMode.RANDOM, config.delayConfig.waitMode);
     assertEquals(420000, config.delayConfig.ppm);
     assertEquals(1234, config.delayConfig.maxDelayMillis);
     assertFalse(config.debug);
@@ -55,16 +55,15 @@ class ChaosDukeyConfigTest {
     properties.put("delay.maxDelayMillis", "1234");
     properties.put("debug", "true");
 
-    ChaosDukeyConfig config = new ChaosDukeyConfig.Loader().load(properties);
+    Config config = new Config.Loader().load(properties);
     assertTrue(config.delayConfig.enabled);
     assertEquals(ElementMatchers.nameMatches("^(?:abc.def.MyClass|xyz.vw.(?:Aaa.*|Bbb))$"), config.delayConfig.typeMatcher);
     assertEquals(ElementMatchers.nameMatches("^(?:my(?:Method|Function)|yourMethod)$"), config.delayConfig.methodMatcher);
-    assertEquals(ChaosDukeyInterceptor.WaitMode.FIXED, config.delayConfig.waitMode);
+    assertEquals(Interceptor.WaitMode.FIXED, config.delayConfig.waitMode);
     assertEquals(42, config.delayConfig.ppm);
     assertEquals(1234, config.delayConfig.maxDelayMillis);
     assertTrue(config.debug);
   }
-
 
   @Test
   void parseArguments_GivenBothPpmAndPercentage_ShouldThrowException() {
@@ -74,6 +73,6 @@ class ChaosDukeyConfigTest {
     properties.put("delay.percentage", "8");
 
     assertThrows(IllegalArgumentException.class,
-            () -> new ChaosDukeyConfig.Loader().load(properties));
+            () -> new Config.Loader().load(properties));
   }
 }

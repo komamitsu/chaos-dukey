@@ -16,14 +16,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ChaosDukeyInterceptorTest {
+class InterceptorTest {
   @Mock Callable<?> callable;
   @Captor ArgumentCaptor<Integer> durationArgumentCaptor;
 
   @Test
   void waitForDuration_GivenArbitraryValue_ShouldWaitProperly() throws InterruptedException {
-    ChaosDukeyInterceptor interceptor =
-        new ChaosDukeyInterceptor(ChaosDukeyInterceptor.WaitMode.RANDOM, 0, 0, true);
+    Interceptor interceptor =
+        new Interceptor(Interceptor.WaitMode.RANDOM, 0, 0, true);
     {
       long start = System.currentTimeMillis();
       interceptor.waitForDuration(0);
@@ -42,8 +42,8 @@ class ChaosDukeyInterceptorTest {
 
   @Test
   void waitForDelay_GivenRandomWaitMode_ShouldRandomlyWait() throws InterruptedException {
-    ChaosDukeyInterceptor interceptor =
-        spy(new ChaosDukeyInterceptor(ChaosDukeyInterceptor.WaitMode.RANDOM, 1000000, 100, true));
+    Interceptor interceptor =
+        spy(new Interceptor(Interceptor.WaitMode.RANDOM, 1000000, 100, true));
     doNothing().when(interceptor).waitForDuration(anyInt());
     int n = 1000;
     for (int i = 0; i < n; i++) {
@@ -59,8 +59,8 @@ class ChaosDukeyInterceptorTest {
 
   @Test
   void waitForDelay_GivenFixedWaitMode_ShouldFixedlyWait() throws InterruptedException {
-    ChaosDukeyInterceptor interceptor =
-        spy(new ChaosDukeyInterceptor(ChaosDukeyInterceptor.WaitMode.FIXED, 1000000, 100, true));
+    Interceptor interceptor =
+        spy(new Interceptor(Interceptor.WaitMode.FIXED, 1000000, 100, true));
     doNothing().when(interceptor).waitForDuration(anyInt());
     int n = 1000;
     for (int i = 0; i < n; i++) {
@@ -75,10 +75,10 @@ class ChaosDukeyInterceptorTest {
   }
 
   @ParameterizedTest()
-  @EnumSource(ChaosDukeyInterceptor.WaitMode.class)
-  void intercept_WithZeroPercentage_ShouldNotWait(ChaosDukeyInterceptor.WaitMode waitMode)
+  @EnumSource(Interceptor.WaitMode.class)
+  void intercept_WithZeroPercentage_ShouldNotWait(Interceptor.WaitMode waitMode)
       throws Exception {
-    ChaosDukeyInterceptor interceptor = spy(new ChaosDukeyInterceptor(waitMode, 0, 1000, true));
+    Interceptor interceptor = spy(new Interceptor(waitMode, 0, 1000, true));
     int n = 1000;
     for (int i = 0; i < n; i++) {
       interceptor.intercept(callable);
@@ -88,11 +88,11 @@ class ChaosDukeyInterceptorTest {
   }
 
   @ParameterizedTest()
-  @EnumSource(ChaosDukeyInterceptor.WaitMode.class)
-  void intercept_WithOneHundredPercentage_ShouldAlwaysWait(ChaosDukeyInterceptor.WaitMode waitMode)
+  @EnumSource(Interceptor.WaitMode.class)
+  void intercept_WithOneHundredPercentage_ShouldAlwaysWait(Interceptor.WaitMode waitMode)
       throws Exception {
-    ChaosDukeyInterceptor interceptor =
-        spy(new ChaosDukeyInterceptor(waitMode, 1000000, 1000, true));
+    Interceptor interceptor =
+        spy(new Interceptor(waitMode, 1000000, 1000, true));
     doNothing().when(interceptor).waitForDelay();
     int n = 1000;
     for (int i = 0; i < n; i++) {

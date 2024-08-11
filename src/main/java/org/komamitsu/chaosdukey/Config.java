@@ -12,9 +12,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-class ChaosDukeyConfig {
-  static final ChaosDukeyInterceptor.WaitMode DEFAULT_WAIT_MODE =
-          ChaosDukeyInterceptor.WaitMode.RANDOM;
+class Config {
+  static final Interceptor.WaitMode DEFAULT_WAIT_MODE =
+          Interceptor.WaitMode.RANDOM;
   // 2%
   static final long DEFAULT_PPM = 20000L;
   static final int DEFAULT_MAX_DELAY_MILLIS = 500;
@@ -22,7 +22,7 @@ class ChaosDukeyConfig {
   final boolean debug;
   final DelayConfig delayConfig;
 
-  public ChaosDukeyConfig(DelayConfig delayConfig, boolean debug) {
+  public Config(DelayConfig delayConfig, boolean debug) {
     this.delayConfig = delayConfig;
     this.debug = debug;
   }
@@ -41,28 +41,28 @@ class ChaosDukeyConfig {
       return this;
     }
 
-    public ChaosDukeyConfig build() {
-      return new ChaosDukeyConfig(delayConfig, debug);
+    public Config build() {
+      return new Config(delayConfig, debug);
     }
   }
   static class Loader {
     private static final String PROP_NAME_CONFIG_PATH = "configPath";
     private final Map<String, Consumer<String>> propertyHandlers = new HashMap<>();
-    private final ChaosDukeyConfig.Builder chaosConfigBuilder = new ChaosDukeyConfig.Builder();
+    private final Config.Builder chaosConfigBuilder = new Config.Builder();
     private final DelayConfig.Builder delayConfigBuilder = new DelayConfig.Builder();
 
     public Loader() {
       propertyHandlers.put("delay.enabled", v -> delayConfigBuilder.setEnabled(Boolean.parseBoolean(v)));
       propertyHandlers.put("delay.typeNamePattern", v -> delayConfigBuilder.setTypeMatcher(ElementMatchers.nameMatches(v)));
       propertyHandlers.put("delay.methodNamePattern", v -> delayConfigBuilder.setMethodMatcher(ElementMatchers.nameMatches(v)));
-      propertyHandlers.put("delay.waitMode", v -> delayConfigBuilder.setWaitMode(ChaosDukeyInterceptor.WaitMode.valueOf(v.toUpperCase())));
+      propertyHandlers.put("delay.waitMode", v -> delayConfigBuilder.setWaitMode(Interceptor.WaitMode.valueOf(v.toUpperCase())));
       propertyHandlers.put("delay.ppm", v -> delayConfigBuilder.setPpm(Long.parseLong(v)));
       propertyHandlers.put("delay.percentage", v -> delayConfigBuilder.setPercentage(Integer.parseInt(v)));
       propertyHandlers.put("delay.maxDelayMillis", v -> delayConfigBuilder.setMaxDelayMillis(Integer.parseInt(v)));
       propertyHandlers.put("debug", v -> chaosConfigBuilder.setDebug(Boolean.parseBoolean(v)));
     }
 
-    ChaosDukeyConfig load(Properties origProperties) throws IOException {
+    Config load(Properties origProperties) throws IOException {
       Properties properties;
       String configPath = origProperties.getProperty(PROP_NAME_CONFIG_PATH);
       if (configPath != null) {
@@ -93,7 +93,7 @@ class ChaosDukeyConfig {
     final boolean enabled;
     final ElementMatcher<TypeDefinition> typeMatcher;
     final ElementMatcher<MethodDescription> methodMatcher;
-    final ChaosDukeyInterceptor.WaitMode waitMode;
+    final Interceptor.WaitMode waitMode;
     final long ppm;
     final int maxDelayMillis;
 
@@ -101,7 +101,7 @@ class ChaosDukeyConfig {
             boolean enabled,
             ElementMatcher<TypeDefinition> typeMatcher,
             ElementMatcher<MethodDescription> methodMatcher,
-            ChaosDukeyInterceptor.WaitMode waitMode,
+            Interceptor.WaitMode waitMode,
             long ppm,
             int maxDelayMillis) {
       this.enabled = enabled;
@@ -116,7 +116,7 @@ class ChaosDukeyConfig {
       private boolean enabled = false;
       private ElementMatcher<TypeDefinition> typeMatcher = ElementMatchers.any();
       private ElementMatcher<MethodDescription> methodMatcher = ElementMatchers.any();
-      private ChaosDukeyInterceptor.WaitMode waitMode = DEFAULT_WAIT_MODE;
+      private Interceptor.WaitMode waitMode = DEFAULT_WAIT_MODE;
       // The default value of this field will be set lazily.
       private Long ppm;
       private Integer percentage;
@@ -137,7 +137,7 @@ class ChaosDukeyConfig {
         return this;
       }
 
-      public Builder setWaitMode(ChaosDukeyInterceptor.WaitMode waitMode) {
+      public Builder setWaitMode(Interceptor.WaitMode waitMode) {
         this.waitMode = waitMode;
         return this;
       }

@@ -7,7 +7,7 @@ import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
 // This class needs to be public.
-public class ChaosDukeyInterceptor {
+public class Interceptor {
   private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
   private final WaitMode waitMode;
@@ -20,7 +20,7 @@ public class ChaosDukeyInterceptor {
     RANDOM;
   }
 
-  public ChaosDukeyInterceptor(WaitMode waitMode, long ppm, int maxDelayMillis, boolean debug) {
+  public Interceptor(WaitMode waitMode, long ppm, int maxDelayMillis, boolean debug) {
     this.waitMode = waitMode;
     this.ppm = ppm;
     this.maxDelayMillis = maxDelayMillis;
