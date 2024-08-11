@@ -7,7 +7,7 @@ import java.util.Properties;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.implementation.MethodDelegation;
 
-public final class ChaosDukeyAgent {
+public final class Main {
   static ChaosDukeyConfig configFromArguments(String arguments) throws IOException {
     Properties properties = new Properties();
     if (arguments != null) {

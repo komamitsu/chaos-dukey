@@ -53,11 +53,11 @@ class ChaosDukeyConfig {
 
     public Loader() {
       propertyHandlers.put("delay.enabled", v -> delayConfigBuilder.setEnabled(Boolean.parseBoolean(v)));
-      propertyHandlers.put("delay.typeMatcher", v -> delayConfigBuilder.setTypeMatcher(ElementMatchers.nameMatches(v)));
-      propertyHandlers.put("delay.methodMatcher", v -> delayConfigBuilder.setMethodMatcher(ElementMatchers.nameMatches(v)));
-      propertyHandlers.put("delay.waitMode", v -> delayConfigBuilder.setWaitMode(ChaosDukeyInterceptor.WaitMode.valueOf(v)));
+      propertyHandlers.put("delay.typeNamePattern", v -> delayConfigBuilder.setTypeMatcher(ElementMatchers.nameMatches(v)));
+      propertyHandlers.put("delay.methodNamePattern", v -> delayConfigBuilder.setMethodMatcher(ElementMatchers.nameMatches(v)));
+      propertyHandlers.put("delay.waitMode", v -> delayConfigBuilder.setWaitMode(ChaosDukeyInterceptor.WaitMode.valueOf(v.toUpperCase())));
       propertyHandlers.put("delay.ppm", v -> delayConfigBuilder.setPpm(Long.parseLong(v)));
-      propertyHandlers.put("delay.percentage", v -> delayConfigBuilder.setPpm(Long.parseLong(v)));
+      propertyHandlers.put("delay.percentage", v -> delayConfigBuilder.setPercentage(Integer.parseInt(v)));
       propertyHandlers.put("delay.maxDelayMillis", v -> delayConfigBuilder.setMaxDelayMillis(Integer.parseInt(v)));
       propertyHandlers.put("debug", v -> chaosConfigBuilder.setDebug(Boolean.parseBoolean(v)));
     }
@@ -77,7 +77,11 @@ class ChaosDukeyConfig {
       }
 
       for (String propertyName : properties.stringPropertyNames()) {
-        propertyHandlers.get(propertyName).accept(properties.getProperty(propertyName));
+        Consumer<String> handler = propertyHandlers.get(propertyName);
+        if (handler == null) {
+          throw new IllegalArgumentException("Unexpected parameter: " + propertyName);
+        }
+        handler.accept(properties.getProperty(propertyName));
       }
       return chaosConfigBuilder
               .setDelayConfig(delayConfigBuilder.build())
