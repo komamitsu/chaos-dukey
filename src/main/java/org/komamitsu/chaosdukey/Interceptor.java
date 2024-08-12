@@ -3,6 +3,7 @@ package org.komamitsu.chaosdukey;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
@@ -12,7 +13,7 @@ public class Interceptor {
 
   private final Config config;
 
-  enum WaitMode {
+  enum DelayWaitMode {
     FIXED,
     RANDOM;
   }
@@ -42,7 +43,7 @@ public class Interceptor {
 
   @RuntimeType
   public Object intercept(@SuperCall Callable<?> callable) throws Exception {
-    if (random.nextLong(1000000) < config.delayConfig.ppm) {
+    if (config.delayConfig.enabled && random.nextLong(1000000) < config.delayConfig.ppm) {
       boolean delayBeforeInvocation = random.nextBoolean();
       if (delayBeforeInvocation) {
         if (config.debug) {

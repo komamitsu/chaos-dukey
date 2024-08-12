@@ -22,7 +22,9 @@ class InterceptorTest {
 
   @Test
   void waitForDuration_GivenArbitraryValue_ShouldWaitProperly() throws InterruptedException {
-    Interceptor interceptor = new Interceptor(new Config(new Config.DelayConfig.Builder().build(), true));
+    Interceptor interceptor =
+        new Interceptor(
+            new Config(new Config.DelayConfig.Builder().build(), new Config.FailureConfig.Builder().build(), true));
     {
       long start = System.currentTimeMillis();
       interceptor.waitForDuration(0);
@@ -46,10 +48,11 @@ class InterceptorTest {
                     new Config(
                             new Config.DelayConfig.Builder()
                                     .setEnabled(true)
-                                    .setWaitMode(Interceptor.WaitMode.RANDOM)
+                                    .setWaitMode(Interceptor.DelayWaitMode.RANDOM)
                                     .setMaxDelayMillis(100)
                                     .setPercentage(100)
                                     .build(),
+                            new Config.FailureConfig.Builder().build(),
                             true)));
     doNothing().when(interceptor).waitForDuration(anyInt());
     int n = 1000;
@@ -71,10 +74,11 @@ class InterceptorTest {
                     new Config(
                             new Config.DelayConfig.Builder()
                                     .setEnabled(true)
-                                    .setWaitMode(Interceptor.WaitMode.FIXED)
+                                    .setWaitMode(Interceptor.DelayWaitMode.FIXED)
                                     .setMaxDelayMillis(100)
                                     .setPercentage(100)
                                     .build(),
+                            new Config.FailureConfig.Builder().build(),
                             true)));
     doNothing().when(interceptor).waitForDuration(anyInt());
     int n = 1000;
@@ -90,8 +94,8 @@ class InterceptorTest {
   }
 
   @ParameterizedTest()
-  @EnumSource(Interceptor.WaitMode.class)
-  void intercept_WithZeroPercentage_ShouldNotWait(Interceptor.WaitMode waitMode)
+  @EnumSource(Interceptor.DelayWaitMode.class)
+  void intercept_WithZeroPercentage_ShouldNotWait(Interceptor.DelayWaitMode waitMode)
       throws Exception {
     Interceptor interceptor = spy(
             new Interceptor(
@@ -102,6 +106,7 @@ class InterceptorTest {
                                     .setMaxDelayMillis(1000)
                                     .setPercentage(0)
                                     .build(),
+                            new Config.FailureConfig.Builder().build(),
                             true)));
     int n = 1000;
     for (int i = 0; i < n; i++) {
@@ -112,8 +117,8 @@ class InterceptorTest {
   }
 
   @ParameterizedTest()
-  @EnumSource(Interceptor.WaitMode.class)
-  void intercept_WithOneHundredPercentage_ShouldAlwaysWait(Interceptor.WaitMode waitMode)
+  @EnumSource(Interceptor.DelayWaitMode.class)
+  void intercept_WithOneHundredPercentage_ShouldAlwaysWait(Interceptor.DelayWaitMode waitMode)
       throws Exception {
     Interceptor interceptor = spy(
             new Interceptor(
@@ -124,6 +129,7 @@ class InterceptorTest {
                                     .setMaxDelayMillis(1000)
                                     .setPercentage(100)
                                     .build(),
+                            new Config.FailureConfig.Builder().build(),
                             true)));
     doNothing().when(interceptor).waitForDelay();
     int n = 1000;

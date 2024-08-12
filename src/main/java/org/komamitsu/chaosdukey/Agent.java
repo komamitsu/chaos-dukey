@@ -7,7 +7,7 @@ import java.util.Properties;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.implementation.MethodDelegation;
 
-public final class Main {
+public final class Agent {
   static Config configFromArguments(String arguments) throws IOException {
     Properties properties = new Properties();
     if (arguments != null) {
@@ -31,17 +31,16 @@ public final class Main {
 
     Interceptor interceptor = new Interceptor(config);
     AgentBuilder agentBuilder =
-        new AgentBuilder.Default()
-            .type(config.delayConfig.typeMatcher)
-            .transform(
-                (builder, type, classLoader, module, protectionDomain) ->
-                    builder
-                        .method(config.delayConfig.methodMatcher)
-                        .intercept(MethodDelegation.to(interceptor)));
+            new AgentBuilder.Default()
+                    .type(config.delayConfig.typeMatcher)
+                    .transform(
+                            (builder, type, classLoader, module, protectionDomain) ->
+                                    builder
+                                            .method(config.delayConfig.methodMatcher)
+                                            .intercept(MethodDelegation.to(interceptor)));
     if (config.debug) {
       agentBuilder = agentBuilder.with(AgentBuilder.Listener.StreamWriting.toSystemError());
     }
-
     agentBuilder.installOn(instrumentation);
   }
 }

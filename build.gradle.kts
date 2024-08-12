@@ -26,7 +26,7 @@ tasks.getByName<Test>("test") {
 
 tasks.jar {
     manifest {
-        attributes(mapOf("Premain-Class" to "org.komamitsu.chaosdukey.Main"))
+        attributes(mapOf("Premain-Class" to "org.komamitsu.chaosdukey.Agent"))
     }
 }
 

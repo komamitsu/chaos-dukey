@@ -7,10 +7,10 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MainTest {
+class AgentTest {
     @Test
     void configFromArguments() throws IOException {
-        Config config = Main.configFromArguments(
+        Config config = Agent.configFromArguments(
                 "delay.enabled=true, delay.typeNamePattern=^org\\.example\\.transaction\\.(?:Foo|Bar)$, delay.maxDelayMillis = 250 ");
         assertTrue(config.delayConfig.enabled);
         assertEquals(ElementMatchers.nameMatches("^org\\.example\\.transaction\\.(?:Foo|Bar)$"),
