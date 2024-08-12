@@ -29,18 +29,35 @@ public final class Agent {
   public static void premain(String arguments, Instrumentation instrumentation) throws IOException {
     Config config= configFromArguments(arguments);
 
-    Interceptor interceptor = new Interceptor(config);
-    AgentBuilder agentBuilder =
-            new AgentBuilder.Default()
-                    .type(config.delayConfig.typeMatcher)
-                    .transform(
-                            (builder, type, classLoader, module, protectionDomain) ->
-                                    builder
-                                            .method(config.delayConfig.methodMatcher)
-                                            .intercept(MethodDelegation.to(interceptor)));
-    if (config.debug) {
-      agentBuilder = agentBuilder.with(AgentBuilder.Listener.StreamWriting.toSystemError());
+    {
+      InterceptorForDelay interceptor = new InterceptorForDelay(config);
+      AgentBuilder agentBuilder =
+          new AgentBuilder.Default()
+              .type(config.delayConfig.typeMatcher)
+              .transform(
+                  (builder, type, classLoader, module, protectionDomain) ->
+                      builder
+                          .method(config.delayConfig.methodMatcher)
+                          .intercept(MethodDelegation.to(interceptor)));
+      if (config.debug) {
+        agentBuilder = agentBuilder.with(AgentBuilder.Listener.StreamWriting.toSystemError());
+      }
+      agentBuilder.installOn(instrumentation);
     }
-    agentBuilder.installOn(instrumentation);
+    {
+      InterceptorForFailure interceptor = new InterceptorForFailure(config);
+      AgentBuilder agentBuilder =
+              new AgentBuilder.Default()
+                      .type(config.failureConfig.typeMatcher)
+                      .transform(
+                              (builder, type, classLoader, module, protectionDomain) ->
+                                      builder
+                                              .method(config.failureConfig.methodMatcher)
+                                              .intercept(MethodDelegation.to(interceptor)));
+      if (config.debug) {
+        agentBuilder = agentBuilder.with(AgentBuilder.Listener.StreamWriting.toSystemError());
+      }
+      agentBuilder.installOn(instrumentation);
+    }
   }
 }

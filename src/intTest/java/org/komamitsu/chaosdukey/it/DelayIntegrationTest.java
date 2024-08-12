@@ -12,8 +12,15 @@ public class DelayIntegrationTest {
   @Test
   void test() {
       Foo foo = new Foo();
-      Instant start = Instant.now();
-      assertEquals(3, foo.add(1, 2));
-      assertTrue(Duration.between(start, Instant.now()).toMillis() > 1000);
+      {
+          Instant start = Instant.now();
+          assertEquals(3, foo.add(1, 2));
+          assertTrue(Duration.between(start, Instant.now()).toMillis() > 1000);
+      }
+      {
+          Instant start = Instant.now();
+          assertEquals("hello world", foo.concat("hello ", "world"));
+          assertTrue(Duration.between(start, Instant.now()).toMillis() < 500);
+      }
   }
 }

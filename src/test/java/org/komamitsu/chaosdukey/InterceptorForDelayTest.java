@@ -16,14 +16,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class InterceptorTest {
+class InterceptorForDelayTest {
   @Mock Callable<?> callable;
   @Captor ArgumentCaptor<Integer> durationArgumentCaptor;
 
   @Test
   void waitForDuration_GivenArbitraryValue_ShouldWaitProperly() throws InterruptedException {
-    Interceptor interceptor =
-        new Interceptor(
+    InterceptorForDelay interceptor =
+        new InterceptorForDelay(
             new Config(new Config.DelayConfig.Builder().build(), new Config.FailureConfig.Builder().build(), true));
     {
       long start = System.currentTimeMillis();
@@ -43,12 +43,12 @@ class InterceptorTest {
 
   @Test
   void waitForDelay_GivenRandomWaitMode_ShouldRandomlyWait() throws InterruptedException {
-    Interceptor interceptor = spy(
-            new Interceptor(
+    InterceptorForDelay interceptor = spy(
+            new InterceptorForDelay(
                     new Config(
                             new Config.DelayConfig.Builder()
                                     .setEnabled(true)
-                                    .setWaitMode(Interceptor.DelayWaitMode.RANDOM)
+                                    .setWaitMode(InterceptorForDelay.DelayWaitMode.RANDOM)
                                     .setMaxDelayMillis(100)
                                     .setPercentage(100)
                                     .build(),
@@ -69,12 +69,12 @@ class InterceptorTest {
 
   @Test
   void waitForDelay_GivenFixedWaitMode_ShouldFixedlyWait() throws InterruptedException {
-    Interceptor interceptor = spy(
-            new Interceptor(
+    InterceptorForDelay interceptor = spy(
+            new InterceptorForDelay(
                     new Config(
                             new Config.DelayConfig.Builder()
                                     .setEnabled(true)
-                                    .setWaitMode(Interceptor.DelayWaitMode.FIXED)
+                                    .setWaitMode(InterceptorForDelay.DelayWaitMode.FIXED)
                                     .setMaxDelayMillis(100)
                                     .setPercentage(100)
                                     .build(),
@@ -94,11 +94,11 @@ class InterceptorTest {
   }
 
   @ParameterizedTest()
-  @EnumSource(Interceptor.DelayWaitMode.class)
-  void intercept_WithZeroPercentage_ShouldNotWait(Interceptor.DelayWaitMode waitMode)
+  @EnumSource(InterceptorForDelay.DelayWaitMode.class)
+  void intercept_WithZeroPercentage_ShouldNotWait(InterceptorForDelay.DelayWaitMode waitMode)
       throws Exception {
-    Interceptor interceptor = spy(
-            new Interceptor(
+    InterceptorForDelay interceptor = spy(
+            new InterceptorForDelay(
                     new Config(
                             new Config.DelayConfig.Builder()
                                     .setEnabled(true)
@@ -117,11 +117,11 @@ class InterceptorTest {
   }
 
   @ParameterizedTest()
-  @EnumSource(Interceptor.DelayWaitMode.class)
-  void intercept_WithOneHundredPercentage_ShouldAlwaysWait(Interceptor.DelayWaitMode waitMode)
+  @EnumSource(InterceptorForDelay.DelayWaitMode.class)
+  void intercept_WithOneHundredPercentage_ShouldAlwaysWait(InterceptorForDelay.DelayWaitMode waitMode)
       throws Exception {
-    Interceptor interceptor = spy(
-            new Interceptor(
+    InterceptorForDelay interceptor = spy(
+            new InterceptorForDelay(
                     new Config(
                             new Config.DelayConfig.Builder()
                                     .setEnabled(true)

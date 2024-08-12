@@ -8,7 +8,7 @@ import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
 // This class needs to be public.
-public class Interceptor {
+public class InterceptorForDelay {
   private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
   private final Config config;
@@ -18,7 +18,7 @@ public class Interceptor {
     RANDOM;
   }
 
-  public Interceptor(Config config) {
+  public InterceptorForDelay(Config config) {
     this.config = config;
   }
 

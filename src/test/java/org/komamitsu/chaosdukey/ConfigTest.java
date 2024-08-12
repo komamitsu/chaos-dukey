@@ -15,9 +15,9 @@ class ConfigTest {
     Properties properties = new Properties();
     Config config = new Config.Loader().load(properties);
     assertFalse(config.delayConfig.enabled);
-    assertEquals(ElementMatchers.any(), config.delayConfig.typeMatcher);
-    assertEquals(ElementMatchers.any(), config.delayConfig.methodMatcher);
-    assertEquals(Interceptor.DelayWaitMode.RANDOM, config.delayConfig.waitMode);
+    assertEquals(ElementMatchers.none(), config.delayConfig.typeMatcher);
+    assertEquals(ElementMatchers.none(), config.delayConfig.methodMatcher);
+    assertEquals(InterceptorForDelay.DelayWaitMode.RANDOM, config.delayConfig.waitMode);
     assertEquals(20000L, config.delayConfig.ppm);
     assertEquals(500, config.delayConfig.maxDelayMillis);
     assertFalse(config.debug);
@@ -38,7 +38,7 @@ class ConfigTest {
     assertTrue(config.delayConfig.enabled);
     assertEquals(ElementMatchers.nameMatches("^abc.def.MyClass$"), config.delayConfig.typeMatcher);
     assertEquals(ElementMatchers.nameMatches("^myMethod$"), config.delayConfig.methodMatcher);
-    assertEquals(Interceptor.DelayWaitMode.RANDOM, config.delayConfig.waitMode);
+    assertEquals(InterceptorForDelay.DelayWaitMode.RANDOM, config.delayConfig.waitMode);
     assertEquals(420000, config.delayConfig.ppm);
     assertEquals(1234, config.delayConfig.maxDelayMillis);
     assertFalse(config.debug);
@@ -59,7 +59,7 @@ class ConfigTest {
     assertTrue(config.delayConfig.enabled);
     assertEquals(ElementMatchers.nameMatches("^(?:abc.def.MyClass|xyz.vw.(?:Aaa.*|Bbb))$"), config.delayConfig.typeMatcher);
     assertEquals(ElementMatchers.nameMatches("^(?:my(?:Method|Function)|yourMethod)$"), config.delayConfig.methodMatcher);
-    assertEquals(Interceptor.DelayWaitMode.FIXED, config.delayConfig.waitMode);
+    assertEquals(InterceptorForDelay.DelayWaitMode.FIXED, config.delayConfig.waitMode);
     assertEquals(42, config.delayConfig.ppm);
     assertEquals(1234, config.delayConfig.maxDelayMillis);
     assertTrue(config.debug);

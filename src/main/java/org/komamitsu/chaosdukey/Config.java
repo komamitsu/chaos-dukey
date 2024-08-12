@@ -13,8 +13,8 @@ import java.util.Properties;
 import java.util.function.Consumer;
 
 class Config {
-  static final Interceptor.DelayWaitMode DEFAULT_WAIT_MODE =
-          Interceptor.DelayWaitMode.RANDOM;
+  static final InterceptorForDelay.DelayWaitMode DEFAULT_WAIT_MODE =
+          InterceptorForDelay.DelayWaitMode.RANDOM;
   // 2%
   static final long DEFAULT_PPM = 20000L;
   static final int DEFAULT_MAX_DELAY_MILLIS = 500;
@@ -23,10 +23,21 @@ class Config {
   final DelayConfig delayConfig;
   final FailureConfig failureConfig;
 
+  @Override
+  public String toString() {
+    return "Config{" +
+            "debug=" + debug +
+            ", delayConfig=" + delayConfig +
+            ", failureConfig=" + failureConfig +
+            '}';
+  }
+
   public Config(DelayConfig delayConfig, FailureConfig failureConfig, boolean debug) {
     this.delayConfig = delayConfig;
     this.failureConfig = failureConfig;
     this.debug = debug;
+
+
   }
 
   public static class Builder {
@@ -65,7 +76,7 @@ class Config {
       propertyHandlers.put("delay.enabled", v -> delayConfigBuilder.setEnabled(Boolean.parseBoolean(v)));
       propertyHandlers.put("delay.typeNamePattern", v -> delayConfigBuilder.setTypeMatcher(ElementMatchers.nameMatches(v)));
       propertyHandlers.put("delay.methodNamePattern", v -> delayConfigBuilder.setMethodMatcher(ElementMatchers.nameMatches(v)));
-      propertyHandlers.put("delay.waitMode", v -> delayConfigBuilder.setWaitMode(Interceptor.DelayWaitMode.valueOf(v.toUpperCase())));
+      propertyHandlers.put("delay.waitMode", v -> delayConfigBuilder.setWaitMode(InterceptorForDelay.DelayWaitMode.valueOf(v.toUpperCase())));
       propertyHandlers.put("delay.ppm", v -> delayConfigBuilder.setPpm(Long.parseLong(v)));
       propertyHandlers.put("delay.percentage", v -> delayConfigBuilder.setPercentage(Integer.parseInt(v)));
       propertyHandlers.put("delay.maxDelayMillis", v -> delayConfigBuilder.setMaxDelayMillis(Integer.parseInt(v)));
@@ -74,7 +85,7 @@ class Config {
       propertyHandlers.put("failure.methodNamePattern", v -> failureConfigBuilder.setMethodMatcher(ElementMatchers.nameMatches(v)));
       propertyHandlers.put("failure.ppm", v -> failureConfigBuilder.setPpm(Long.parseLong(v)));
       propertyHandlers.put("failure.percentage", v -> failureConfigBuilder.setPercentage(Integer.parseInt(v)));
-      propertyHandlers.put("failure.exception", failureConfigBuilder::setExceptionClass);
+      propertyHandlers.put("failure.exceptionClassName", failureConfigBuilder::setExceptionClassName);
       propertyHandlers.put("debug", v -> chaosConfigBuilder.setDebug(Boolean.parseBoolean(v)));
     }
 
@@ -107,10 +118,11 @@ class Config {
   }
 
   static class DelayConfig {
+    // TODO: Remove
     final boolean enabled;
     final ElementMatcher<TypeDefinition> typeMatcher;
     final ElementMatcher<MethodDescription> methodMatcher;
-    final Interceptor.DelayWaitMode waitMode;
+    final InterceptorForDelay.DelayWaitMode waitMode;
     final long ppm;
     final int maxDelayMillis;
 
@@ -118,7 +130,7 @@ class Config {
             boolean enabled,
             ElementMatcher<TypeDefinition> typeMatcher,
             ElementMatcher<MethodDescription> methodMatcher,
-            Interceptor.DelayWaitMode waitMode,
+            InterceptorForDelay.DelayWaitMode waitMode,
             long ppm,
             int maxDelayMillis) {
       this.enabled = enabled;
@@ -131,9 +143,9 @@ class Config {
 
     public static class Builder {
       private boolean enabled = false;
-      private ElementMatcher<TypeDefinition> typeMatcher = ElementMatchers.any();
-      private ElementMatcher<MethodDescription> methodMatcher = ElementMatchers.any();
-      private Interceptor.DelayWaitMode waitMode = DEFAULT_WAIT_MODE;
+      private ElementMatcher<TypeDefinition> typeMatcher = ElementMatchers.none();
+      private ElementMatcher<MethodDescription> methodMatcher = ElementMatchers.none();
+      private InterceptorForDelay.DelayWaitMode waitMode = DEFAULT_WAIT_MODE;
       // The default value of this field will be set lazily.
       private Long ppm;
       private Integer percentage;
@@ -154,7 +166,7 @@ class Config {
         return this;
       }
 
-      public Builder setWaitMode(Interceptor.DelayWaitMode waitMode) {
+      public Builder setWaitMode(InterceptorForDelay.DelayWaitMode waitMode) {
         this.waitMode = waitMode;
         return this;
       }
@@ -192,8 +204,21 @@ class Config {
         return new DelayConfig(enabled, typeMatcher, methodMatcher, waitMode, ppm, maxDelayMillis);
       }
     }
+
+    @Override
+    public String toString() {
+      return "DelayConfig{" +
+              "enabled=" + enabled +
+              ", typeMatcher=" + typeMatcher +
+              ", methodMatcher=" + methodMatcher +
+              ", waitMode=" + waitMode +
+              ", ppm=" + ppm +
+              ", maxDelayMillis=" + maxDelayMillis +
+              '}';
+    }
   }
   static class FailureConfig {
+    // TODO: Remove
     final boolean enabled;
     final ElementMatcher<TypeDefinition> typeMatcher;
     final ElementMatcher<MethodDescription> methodMatcher;
@@ -215,8 +240,8 @@ class Config {
 
     public static class Builder {
       private boolean enabled = false;
-      private ElementMatcher<TypeDefinition> typeMatcher = ElementMatchers.any();
-      private ElementMatcher<MethodDescription> methodMatcher = ElementMatchers.any();
+      private ElementMatcher<TypeDefinition> typeMatcher = ElementMatchers.none();
+      private ElementMatcher<MethodDescription> methodMatcher = ElementMatchers.none();
       // The default value of this field will be set lazily.
       private Long ppm;
       private Integer percentage;
@@ -253,7 +278,7 @@ class Config {
         return this;
       }
 
-      public Builder setExceptionClass(String exceptionClassName) {
+      public Builder setExceptionClassName(String exceptionClassName) {
         try {
           this.exceptionClass = Class.forName(exceptionClassName).asSubclass(Exception.class);
         } catch (ClassNotFoundException e) {
@@ -274,6 +299,17 @@ class Config {
         }
         return new FailureConfig(enabled, typeMatcher, methodMatcher, ppm, exceptionClass);
       }
+    }
+
+    @Override
+    public String toString() {
+      return "FailureConfig{" +
+              "enabled=" + enabled +
+              ", typeMatcher=" + typeMatcher +
+              ", methodMatcher=" + methodMatcher +
+              ", ppm=" + ppm +
+              ", exceptionClass=" + exceptionClass +
+              '}';
     }
   }
 }
