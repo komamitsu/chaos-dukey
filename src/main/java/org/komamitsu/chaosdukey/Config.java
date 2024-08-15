@@ -36,8 +36,6 @@ class Config {
     this.delayConfig = delayConfig;
     this.failureConfig = failureConfig;
     this.debug = debug;
-
-
   }
 
   public static class Builder {
