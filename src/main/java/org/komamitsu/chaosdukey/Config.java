@@ -1,20 +1,19 @@
 package org.komamitsu.chaosdukey;
 
-import net.bytebuddy.description.method.MethodDescription;
-import net.bytebuddy.description.type.TypeDefinition;
-import net.bytebuddy.matcher.ElementMatcher;
-import net.bytebuddy.matcher.ElementMatchers;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Consumer;
+import net.bytebuddy.description.method.MethodDescription;
+import net.bytebuddy.description.type.TypeDefinition;
+import net.bytebuddy.matcher.ElementMatcher;
+import net.bytebuddy.matcher.ElementMatchers;
 
 class Config {
   static final InterceptorForDelay.DelayWaitMode DEFAULT_WAIT_MODE =
-          InterceptorForDelay.DelayWaitMode.RANDOM;
+      InterceptorForDelay.DelayWaitMode.RANDOM;
   // 2%
   static final long DEFAULT_PPM = 20000L;
   static final int DEFAULT_MAX_DELAY_MILLIS = 500;
@@ -25,11 +24,14 @@ class Config {
 
   @Override
   public String toString() {
-    return "Config{" +
-            "debug=" + debug +
-            ", delayConfig=" + delayConfig +
-            ", failureConfig=" + failureConfig +
-            '}';
+    return "Config{"
+        + "debug="
+        + debug
+        + ", delayConfig="
+        + delayConfig
+        + ", failureConfig="
+        + failureConfig
+        + '}';
   }
 
   public Config(DelayConfig delayConfig, FailureConfig failureConfig, boolean debug) {
@@ -71,19 +73,37 @@ class Config {
     private final FailureConfig.Builder failureConfigBuilder = new FailureConfig.Builder();
 
     public Loader() {
-      propertyHandlers.put("delay.enabled", v -> delayConfigBuilder.setEnabled(Boolean.parseBoolean(v)));
-      propertyHandlers.put("delay.typeNamePattern", v -> delayConfigBuilder.setTypeMatcher(ElementMatchers.nameMatches(v)));
-      propertyHandlers.put("delay.methodNamePattern", v -> delayConfigBuilder.setMethodMatcher(ElementMatchers.nameMatches(v)));
-      propertyHandlers.put("delay.waitMode", v -> delayConfigBuilder.setWaitMode(InterceptorForDelay.DelayWaitMode.valueOf(v.toUpperCase())));
+      propertyHandlers.put(
+          "delay.enabled", v -> delayConfigBuilder.setEnabled(Boolean.parseBoolean(v)));
+      propertyHandlers.put(
+          "delay.typeNamePattern",
+          v -> delayConfigBuilder.setTypeMatcher(ElementMatchers.nameMatches(v)));
+      propertyHandlers.put(
+          "delay.methodNamePattern",
+          v -> delayConfigBuilder.setMethodMatcher(ElementMatchers.nameMatches(v)));
+      propertyHandlers.put(
+          "delay.waitMode",
+          v ->
+              delayConfigBuilder.setWaitMode(
+                  InterceptorForDelay.DelayWaitMode.valueOf(v.toUpperCase())));
       propertyHandlers.put("delay.ppm", v -> delayConfigBuilder.setPpm(Long.parseLong(v)));
-      propertyHandlers.put("delay.percentage", v -> delayConfigBuilder.setPercentage(Integer.parseInt(v)));
-      propertyHandlers.put("delay.maxDelayMillis", v -> delayConfigBuilder.setMaxDelayMillis(Integer.parseInt(v)));
-      propertyHandlers.put("failure.enabled", v -> failureConfigBuilder.setEnabled(Boolean.parseBoolean(v)));
-      propertyHandlers.put("failure.typeNamePattern", v -> failureConfigBuilder.setTypeMatcher(ElementMatchers.nameMatches(v)));
-      propertyHandlers.put("failure.methodNamePattern", v -> failureConfigBuilder.setMethodMatcher(ElementMatchers.nameMatches(v)));
+      propertyHandlers.put(
+          "delay.percentage", v -> delayConfigBuilder.setPercentage(Integer.parseInt(v)));
+      propertyHandlers.put(
+          "delay.maxDelayMillis", v -> delayConfigBuilder.setMaxDelayMillis(Integer.parseInt(v)));
+      propertyHandlers.put(
+          "failure.enabled", v -> failureConfigBuilder.setEnabled(Boolean.parseBoolean(v)));
+      propertyHandlers.put(
+          "failure.typeNamePattern",
+          v -> failureConfigBuilder.setTypeMatcher(ElementMatchers.nameMatches(v)));
+      propertyHandlers.put(
+          "failure.methodNamePattern",
+          v -> failureConfigBuilder.setMethodMatcher(ElementMatchers.nameMatches(v)));
       propertyHandlers.put("failure.ppm", v -> failureConfigBuilder.setPpm(Long.parseLong(v)));
-      propertyHandlers.put("failure.percentage", v -> failureConfigBuilder.setPercentage(Integer.parseInt(v)));
-      propertyHandlers.put("failure.exceptionClassName", failureConfigBuilder::setExceptionClassName);
+      propertyHandlers.put(
+          "failure.percentage", v -> failureConfigBuilder.setPercentage(Integer.parseInt(v)));
+      propertyHandlers.put(
+          "failure.exceptionClassName", failureConfigBuilder::setExceptionClassName);
       propertyHandlers.put("debug", v -> chaosConfigBuilder.setDebug(Boolean.parseBoolean(v)));
     }
 
@@ -96,8 +116,7 @@ class Config {
           properties.load(fio);
           properties.remove(PROP_NAME_CONFIG_FILE);
         }
-      }
-      else {
+      } else {
         properties = new Properties(origProperties);
       }
 
@@ -109,9 +128,9 @@ class Config {
         handler.accept(properties.getProperty(propertyName));
       }
       return chaosConfigBuilder
-              .setDelayConfig(delayConfigBuilder.build())
-              .setFailureConfig(failureConfigBuilder.build())
-              .build();
+          .setDelayConfig(delayConfigBuilder.build())
+          .setFailureConfig(failureConfigBuilder.build())
+          .build();
     }
   }
 
@@ -125,12 +144,12 @@ class Config {
     final int maxDelayMillis;
 
     public DelayConfig(
-            boolean enabled,
-            ElementMatcher<TypeDefinition> typeMatcher,
-            ElementMatcher<MethodDescription> methodMatcher,
-            InterceptorForDelay.DelayWaitMode waitMode,
-            long ppm,
-            int maxDelayMillis) {
+        boolean enabled,
+        ElementMatcher<TypeDefinition> typeMatcher,
+        ElementMatcher<MethodDescription> methodMatcher,
+        InterceptorForDelay.DelayWaitMode waitMode,
+        long ppm,
+        int maxDelayMillis) {
       this.enabled = enabled;
       this.typeMatcher = typeMatcher;
       this.methodMatcher = methodMatcher;
@@ -194,8 +213,7 @@ class Config {
         if (ppm == null) {
           if (percentage != null) {
             ppm = percentage * 10000L;
-          }
-          else {
+          } else {
             ppm = DEFAULT_PPM;
           }
         }
@@ -205,16 +223,23 @@ class Config {
 
     @Override
     public String toString() {
-      return "DelayConfig{" +
-              "enabled=" + enabled +
-              ", typeMatcher=" + typeMatcher +
-              ", methodMatcher=" + methodMatcher +
-              ", waitMode=" + waitMode +
-              ", ppm=" + ppm +
-              ", maxDelayMillis=" + maxDelayMillis +
-              '}';
+      return "DelayConfig{"
+          + "enabled="
+          + enabled
+          + ", typeMatcher="
+          + typeMatcher
+          + ", methodMatcher="
+          + methodMatcher
+          + ", waitMode="
+          + waitMode
+          + ", ppm="
+          + ppm
+          + ", maxDelayMillis="
+          + maxDelayMillis
+          + '}';
     }
   }
+
   static class FailureConfig {
     // TODO: Remove
     final boolean enabled;
@@ -224,11 +249,11 @@ class Config {
     final Class<? extends Exception> exceptionClass;
 
     public FailureConfig(
-            boolean enabled,
-            ElementMatcher<TypeDefinition> typeMatcher,
-            ElementMatcher<MethodDescription> methodMatcher,
-            long ppm,
-            Class<? extends Exception> exceptionClass) {
+        boolean enabled,
+        ElementMatcher<TypeDefinition> typeMatcher,
+        ElementMatcher<MethodDescription> methodMatcher,
+        long ppm,
+        Class<? extends Exception> exceptionClass) {
       this.enabled = enabled;
       this.typeMatcher = typeMatcher;
       this.methodMatcher = methodMatcher;
@@ -281,7 +306,7 @@ class Config {
           this.exceptionClass = Class.forName(exceptionClassName).asSubclass(Exception.class);
         } catch (ClassNotFoundException e) {
           throw new IllegalArgumentException(
-                  String.format("Exception class `%s` is not found", exceptionClassName));
+              String.format("Exception class `%s` is not found", exceptionClassName));
         }
         return this;
       }
@@ -290,8 +315,7 @@ class Config {
         if (ppm == null) {
           if (percentage != null) {
             ppm = percentage * 10000L;
-          }
-          else {
+          } else {
             ppm = DEFAULT_PPM;
           }
         }
@@ -301,13 +325,18 @@ class Config {
 
     @Override
     public String toString() {
-      return "FailureConfig{" +
-              "enabled=" + enabled +
-              ", typeMatcher=" + typeMatcher +
-              ", methodMatcher=" + methodMatcher +
-              ", ppm=" + ppm +
-              ", exceptionClass=" + exceptionClass +
-              '}';
+      return "FailureConfig{"
+          + "enabled="
+          + enabled
+          + ", typeMatcher="
+          + typeMatcher
+          + ", methodMatcher="
+          + methodMatcher
+          + ", ppm="
+          + ppm
+          + ", exceptionClass="
+          + exceptionClass
+          + '}';
     }
   }
 }

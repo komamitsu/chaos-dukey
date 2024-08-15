@@ -2,11 +2,10 @@ package org.komamitsu.chaosdukey;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import net.bytebuddy.matcher.ElementMatchers;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.util.Properties;
+import net.bytebuddy.matcher.ElementMatchers;
+import org.junit.jupiter.api.Test;
 
 class ConfigTest {
 
@@ -24,7 +23,8 @@ class ConfigTest {
   }
 
   @Test
-  void parseArguments_GivenSpecifiedParametersIncludingRandomWaitModeAndPercentage_ShouldUseThem() throws IOException {
+  void parseArguments_GivenSpecifiedParametersIncludingRandomWaitModeAndPercentage_ShouldUseThem()
+      throws IOException {
     Properties properties = new Properties();
     properties.put("delay.enabled", "true");
     properties.put("delay.typeNamePattern", "^abc.def.MyClass$");
@@ -45,7 +45,9 @@ class ConfigTest {
   }
 
   @Test
-  void parseArguments_GivenSpecifiedParametersIncludingFixedWaitModeAndPpmAndRegexpPatterns_ShouldUseThem() throws IOException {
+  void
+      parseArguments_GivenSpecifiedParametersIncludingFixedWaitModeAndPpmAndRegexpPatterns_ShouldUseThem()
+          throws IOException {
     Properties properties = new Properties();
     properties.put("delay.enabled", "true");
     properties.put("delay.typeNamePattern", "^(?:abc.def.MyClass|xyz.vw.(?:Aaa.*|Bbb))$");
@@ -57,8 +59,12 @@ class ConfigTest {
 
     Config config = new Config.Loader().load(properties);
     assertTrue(config.delayConfig.enabled);
-    assertEquals(ElementMatchers.nameMatches("^(?:abc.def.MyClass|xyz.vw.(?:Aaa.*|Bbb))$"), config.delayConfig.typeMatcher);
-    assertEquals(ElementMatchers.nameMatches("^(?:my(?:Method|Function)|yourMethod)$"), config.delayConfig.methodMatcher);
+    assertEquals(
+        ElementMatchers.nameMatches("^(?:abc.def.MyClass|xyz.vw.(?:Aaa.*|Bbb))$"),
+        config.delayConfig.typeMatcher);
+    assertEquals(
+        ElementMatchers.nameMatches("^(?:my(?:Method|Function)|yourMethod)$"),
+        config.delayConfig.methodMatcher);
     assertEquals(InterceptorForDelay.DelayWaitMode.FIXED, config.delayConfig.waitMode);
     assertEquals(42, config.delayConfig.ppm);
     assertEquals(1234, config.delayConfig.maxDelayMillis);
@@ -72,7 +78,6 @@ class ConfigTest {
     properties.put("delay.ppm", "42");
     properties.put("delay.percentage", "8");
 
-    assertThrows(IllegalArgumentException.class,
-            () -> new Config.Loader().load(properties));
+    assertThrows(IllegalArgumentException.class, () -> new Config.Loader().load(properties));
   }
 }

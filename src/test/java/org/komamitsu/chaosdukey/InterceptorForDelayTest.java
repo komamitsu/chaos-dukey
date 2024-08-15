@@ -24,7 +24,10 @@ class InterceptorForDelayTest {
   void waitForDuration_GivenArbitraryValue_ShouldWaitProperly() throws InterruptedException {
     InterceptorForDelay interceptor =
         new InterceptorForDelay(
-            new Config(new Config.DelayConfig.Builder().build(), new Config.FailureConfig.Builder().build(), true));
+            new Config(
+                new Config.DelayConfig.Builder().build(),
+                new Config.FailureConfig.Builder().build(),
+                true));
     {
       long start = System.currentTimeMillis();
       interceptor.waitForDuration(0);
@@ -43,17 +46,18 @@ class InterceptorForDelayTest {
 
   @Test
   void waitForDelay_GivenRandomWaitMode_ShouldRandomlyWait() throws InterruptedException {
-    InterceptorForDelay interceptor = spy(
+    InterceptorForDelay interceptor =
+        spy(
             new InterceptorForDelay(
-                    new Config(
-                            new Config.DelayConfig.Builder()
-                                    .setEnabled(true)
-                                    .setWaitMode(InterceptorForDelay.DelayWaitMode.RANDOM)
-                                    .setMaxDelayMillis(100)
-                                    .setPercentage(100)
-                                    .build(),
-                            new Config.FailureConfig.Builder().build(),
-                            true)));
+                new Config(
+                    new Config.DelayConfig.Builder()
+                        .setEnabled(true)
+                        .setWaitMode(InterceptorForDelay.DelayWaitMode.RANDOM)
+                        .setMaxDelayMillis(100)
+                        .setPercentage(100)
+                        .build(),
+                    new Config.FailureConfig.Builder().build(),
+                    true)));
     doNothing().when(interceptor).waitForDuration(anyInt());
     int n = 1000;
     for (int i = 0; i < n; i++) {
@@ -69,17 +73,18 @@ class InterceptorForDelayTest {
 
   @Test
   void waitForDelay_GivenFixedWaitMode_ShouldFixedlyWait() throws InterruptedException {
-    InterceptorForDelay interceptor = spy(
+    InterceptorForDelay interceptor =
+        spy(
             new InterceptorForDelay(
-                    new Config(
-                            new Config.DelayConfig.Builder()
-                                    .setEnabled(true)
-                                    .setWaitMode(InterceptorForDelay.DelayWaitMode.FIXED)
-                                    .setMaxDelayMillis(100)
-                                    .setPercentage(100)
-                                    .build(),
-                            new Config.FailureConfig.Builder().build(),
-                            true)));
+                new Config(
+                    new Config.DelayConfig.Builder()
+                        .setEnabled(true)
+                        .setWaitMode(InterceptorForDelay.DelayWaitMode.FIXED)
+                        .setMaxDelayMillis(100)
+                        .setPercentage(100)
+                        .build(),
+                    new Config.FailureConfig.Builder().build(),
+                    true)));
     doNothing().when(interceptor).waitForDuration(anyInt());
     int n = 1000;
     for (int i = 0; i < n; i++) {
@@ -97,17 +102,18 @@ class InterceptorForDelayTest {
   @EnumSource(InterceptorForDelay.DelayWaitMode.class)
   void intercept_WithZeroPercentage_ShouldNotWait(InterceptorForDelay.DelayWaitMode waitMode)
       throws Exception {
-    InterceptorForDelay interceptor = spy(
+    InterceptorForDelay interceptor =
+        spy(
             new InterceptorForDelay(
-                    new Config(
-                            new Config.DelayConfig.Builder()
-                                    .setEnabled(true)
-                                    .setWaitMode(waitMode)
-                                    .setMaxDelayMillis(1000)
-                                    .setPercentage(0)
-                                    .build(),
-                            new Config.FailureConfig.Builder().build(),
-                            true)));
+                new Config(
+                    new Config.DelayConfig.Builder()
+                        .setEnabled(true)
+                        .setWaitMode(waitMode)
+                        .setMaxDelayMillis(1000)
+                        .setPercentage(0)
+                        .build(),
+                    new Config.FailureConfig.Builder().build(),
+                    true)));
     int n = 1000;
     for (int i = 0; i < n; i++) {
       interceptor.intercept(callable);
@@ -118,19 +124,20 @@ class InterceptorForDelayTest {
 
   @ParameterizedTest()
   @EnumSource(InterceptorForDelay.DelayWaitMode.class)
-  void intercept_WithOneHundredPercentage_ShouldAlwaysWait(InterceptorForDelay.DelayWaitMode waitMode)
-      throws Exception {
-    InterceptorForDelay interceptor = spy(
+  void intercept_WithOneHundredPercentage_ShouldAlwaysWait(
+      InterceptorForDelay.DelayWaitMode waitMode) throws Exception {
+    InterceptorForDelay interceptor =
+        spy(
             new InterceptorForDelay(
-                    new Config(
-                            new Config.DelayConfig.Builder()
-                                    .setEnabled(true)
-                                    .setWaitMode(waitMode)
-                                    .setMaxDelayMillis(1000)
-                                    .setPercentage(100)
-                                    .build(),
-                            new Config.FailureConfig.Builder().build(),
-                            true)));
+                new Config(
+                    new Config.DelayConfig.Builder()
+                        .setEnabled(true)
+                        .setWaitMode(waitMode)
+                        .setMaxDelayMillis(1000)
+                        .setPercentage(100)
+                        .build(),
+                    new Config.FailureConfig.Builder().build(),
+                    true)));
     doNothing().when(interceptor).waitForDelay();
     int n = 1000;
     for (int i = 0; i < n; i++) {
