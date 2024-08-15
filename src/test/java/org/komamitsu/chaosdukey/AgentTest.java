@@ -2,19 +2,19 @@ package org.komamitsu.chaosdukey;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.IOException;
-import net.bytebuddy.matcher.ElementMatchers;
+import java.util.Properties;
 import org.junit.jupiter.api.Test;
 
 class AgentTest {
   @Test
-  void configFromArguments() throws IOException {
-    Config config =
-        Agent.configFromArguments(
-            "delay.typeNamePattern=^org\\.example\\.transaction\\.(?:Foo|Bar)$, delay.maxDelayMillis = 250");
+  void propertiesFromArguments() {
+    Properties properties =
+        Agent.propertiesFromArguments(
+            "delay.typeNamePattern=^org\\.example\\.transaction\\.(?:Foo|Bar)$, delay.maxDelayMillis = 250 , failure.methodNamePattern=^unstableMethod$");
     assertEquals(
-        ElementMatchers.nameMatches("^org\\.example\\.transaction\\.(?:Foo|Bar)$"),
-        config.delayConfig.typeMatcher);
-    assertEquals(250, config.delayConfig.maxDelayMillis);
+        "^org\\.example\\.transaction\\.(?:Foo|Bar)$",
+        properties.getProperty("delay.typeNamePattern"));
+    assertEquals("250", properties.getProperty("delay.maxDelayMillis"));
+    assertEquals("^unstableMethod$", properties.getProperty("failure.methodNamePattern"));
   }
 }

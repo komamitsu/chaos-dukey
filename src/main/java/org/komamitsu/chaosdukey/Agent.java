@@ -7,7 +7,7 @@ import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.implementation.MethodDelegation;
 
 public final class Agent {
-  static Config configFromArguments(String arguments) throws IOException {
+  static Properties propertiesFromArguments(String arguments) {
     Properties properties = new Properties();
     if (arguments != null) {
       for (String kv : arguments.split(",")) {
@@ -23,11 +23,11 @@ public final class Agent {
         }
       }
     }
-    return new Config.Loader().load(properties);
+    return properties;
   }
 
   public static void premain(String arguments, Instrumentation instrumentation) throws IOException {
-    Config config = configFromArguments(arguments);
+    Config config = new Config.Loader().load(propertiesFromArguments(arguments));
 
     {
       InterceptorForDelay interceptor = new InterceptorForDelay(config);
