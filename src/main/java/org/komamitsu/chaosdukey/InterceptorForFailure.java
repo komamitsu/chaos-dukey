@@ -17,7 +17,7 @@ public class InterceptorForFailure {
 
   @RuntimeType
   public Object intercept(@SuperCall Callable<?> callable) throws Exception {
-    if (config.failureConfig.enabled && random.nextLong(1000000) < config.failureConfig.ppm) {
+    if (random.nextLong(1000000) < config.failureConfig.ppm) {
       throw config.failureConfig.exceptionClass.newInstance();
     } else {
       return callable.call();

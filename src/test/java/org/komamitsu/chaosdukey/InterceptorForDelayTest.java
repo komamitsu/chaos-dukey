@@ -51,7 +51,6 @@ class InterceptorForDelayTest {
             new InterceptorForDelay(
                 new Config(
                     new Config.DelayConfig.Builder()
-                        .setEnabled(true)
                         .setWaitMode(InterceptorForDelay.DelayWaitMode.RANDOM)
                         .setMaxDelayMillis(100)
                         .setPercentage(100)
@@ -78,7 +77,6 @@ class InterceptorForDelayTest {
             new InterceptorForDelay(
                 new Config(
                     new Config.DelayConfig.Builder()
-                        .setEnabled(true)
                         .setWaitMode(InterceptorForDelay.DelayWaitMode.FIXED)
                         .setMaxDelayMillis(100)
                         .setPercentage(100)
@@ -107,7 +105,6 @@ class InterceptorForDelayTest {
             new InterceptorForDelay(
                 new Config(
                     new Config.DelayConfig.Builder()
-                        .setEnabled(true)
                         .setWaitMode(waitMode)
                         .setMaxDelayMillis(1000)
                         .setPercentage(0)
@@ -131,7 +128,6 @@ class InterceptorForDelayTest {
             new InterceptorForDelay(
                 new Config(
                     new Config.DelayConfig.Builder()
-                        .setEnabled(true)
                         .setWaitMode(waitMode)
                         .setMaxDelayMillis(1000)
                         .setPercentage(100)

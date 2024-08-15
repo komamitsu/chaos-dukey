@@ -42,7 +42,7 @@ public class InterceptorForDelay {
 
   @RuntimeType
   public Object intercept(@SuperCall Callable<?> callable) throws Exception {
-    if (config.delayConfig.enabled && random.nextLong(1000000) < config.delayConfig.ppm) {
+    if (random.nextLong(1000000) < config.delayConfig.ppm) {
       boolean delayBeforeInvocation = random.nextBoolean();
       if (delayBeforeInvocation) {
         if (config.debug) {

@@ -11,8 +11,7 @@ class AgentTest {
   void configFromArguments() throws IOException {
     Config config =
         Agent.configFromArguments(
-            "delay.enabled=true, delay.typeNamePattern=^org\\.example\\.transaction\\.(?:Foo|Bar)$, delay.maxDelayMillis = 250 ");
-    assertTrue(config.delayConfig.enabled);
+            "delay.typeNamePattern=^org\\.example\\.transaction\\.(?:Foo|Bar)$, delay.maxDelayMillis = 250");
     assertEquals(
         ElementMatchers.nameMatches("^org\\.example\\.transaction\\.(?:Foo|Bar)$"),
         config.delayConfig.typeMatcher);

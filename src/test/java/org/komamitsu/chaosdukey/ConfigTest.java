@@ -13,7 +13,6 @@ class ConfigTest {
   void parseArguments_GivenEmptyString_ShouldUseDefaultValues() throws IOException {
     Properties properties = new Properties();
     Config config = new Config.Loader().load(properties);
-    assertFalse(config.delayConfig.enabled);
     assertEquals(ElementMatchers.none(), config.delayConfig.typeMatcher);
     assertEquals(ElementMatchers.none(), config.delayConfig.methodMatcher);
     assertEquals(InterceptorForDelay.DelayWaitMode.RANDOM, config.delayConfig.waitMode);
@@ -26,7 +25,6 @@ class ConfigTest {
   void parseArguments_GivenSpecifiedParametersIncludingRandomWaitModeAndPercentage_ShouldUseThem()
       throws IOException {
     Properties properties = new Properties();
-    properties.put("delay.enabled", "true");
     properties.put("delay.typeNamePattern", "^abc.def.MyClass$");
     properties.put("delay.methodNamePattern", "^myMethod$");
     properties.put("delay.waitMode", "Random");
@@ -35,7 +33,6 @@ class ConfigTest {
     properties.put("debug", "false");
 
     Config config = new Config.Loader().load(properties);
-    assertTrue(config.delayConfig.enabled);
     assertEquals(ElementMatchers.nameMatches("^abc.def.MyClass$"), config.delayConfig.typeMatcher);
     assertEquals(ElementMatchers.nameMatches("^myMethod$"), config.delayConfig.methodMatcher);
     assertEquals(InterceptorForDelay.DelayWaitMode.RANDOM, config.delayConfig.waitMode);
@@ -49,7 +46,6 @@ class ConfigTest {
       parseArguments_GivenSpecifiedParametersIncludingFixedWaitModeAndPpmAndRegexpPatterns_ShouldUseThem()
           throws IOException {
     Properties properties = new Properties();
-    properties.put("delay.enabled", "true");
     properties.put("delay.typeNamePattern", "^(?:abc.def.MyClass|xyz.vw.(?:Aaa.*|Bbb))$");
     properties.put("delay.methodNamePattern", "^(?:my(?:Method|Function)|yourMethod)$");
     properties.put("delay.waitMode", "FIXED");
@@ -58,7 +54,6 @@ class ConfigTest {
     properties.put("debug", "true");
 
     Config config = new Config.Loader().load(properties);
-    assertTrue(config.delayConfig.enabled);
     assertEquals(
         ElementMatchers.nameMatches("^(?:abc.def.MyClass|xyz.vw.(?:Aaa.*|Bbb))$"),
         config.delayConfig.typeMatcher);
@@ -74,7 +69,6 @@ class ConfigTest {
   @Test
   void parseArguments_GivenBothPpmAndPercentage_ShouldThrowException() {
     Properties properties = new Properties();
-    properties.put("delay.enabled", "true");
     properties.put("delay.ppm", "42");
     properties.put("delay.percentage", "8");
 

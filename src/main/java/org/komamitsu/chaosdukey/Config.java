@@ -74,8 +74,6 @@ class Config {
 
     public Loader() {
       propertyHandlers.put(
-          "delay.enabled", v -> delayConfigBuilder.setEnabled(Boolean.parseBoolean(v)));
-      propertyHandlers.put(
           "delay.typeNamePattern",
           v -> delayConfigBuilder.setTypeMatcher(ElementMatchers.nameMatches(v)));
       propertyHandlers.put(
@@ -91,8 +89,6 @@ class Config {
           "delay.percentage", v -> delayConfigBuilder.setPercentage(Integer.parseInt(v)));
       propertyHandlers.put(
           "delay.maxDelayMillis", v -> delayConfigBuilder.setMaxDelayMillis(Integer.parseInt(v)));
-      propertyHandlers.put(
-          "failure.enabled", v -> failureConfigBuilder.setEnabled(Boolean.parseBoolean(v)));
       propertyHandlers.put(
           "failure.typeNamePattern",
           v -> failureConfigBuilder.setTypeMatcher(ElementMatchers.nameMatches(v)));
@@ -135,8 +131,6 @@ class Config {
   }
 
   static class DelayConfig {
-    // TODO: Remove
-    final boolean enabled;
     final ElementMatcher<TypeDefinition> typeMatcher;
     final ElementMatcher<MethodDescription> methodMatcher;
     final InterceptorForDelay.DelayWaitMode waitMode;
@@ -144,13 +138,11 @@ class Config {
     final int maxDelayMillis;
 
     public DelayConfig(
-        boolean enabled,
         ElementMatcher<TypeDefinition> typeMatcher,
         ElementMatcher<MethodDescription> methodMatcher,
         InterceptorForDelay.DelayWaitMode waitMode,
         long ppm,
         int maxDelayMillis) {
-      this.enabled = enabled;
       this.typeMatcher = typeMatcher;
       this.methodMatcher = methodMatcher;
       this.waitMode = waitMode;
@@ -159,7 +151,6 @@ class Config {
     }
 
     public static class Builder {
-      private boolean enabled = false;
       private ElementMatcher<TypeDefinition> typeMatcher = ElementMatchers.none();
       private ElementMatcher<MethodDescription> methodMatcher = ElementMatchers.none();
       private InterceptorForDelay.DelayWaitMode waitMode = DEFAULT_WAIT_MODE;
@@ -167,11 +158,6 @@ class Config {
       private Long ppm;
       private Integer percentage;
       private int maxDelayMillis = DEFAULT_MAX_DELAY_MILLIS;
-
-      public Builder setEnabled(boolean enabled) {
-        this.enabled = enabled;
-        return this;
-      }
 
       public Builder setTypeMatcher(ElementMatcher<TypeDefinition> typeMatcher) {
         this.typeMatcher = typeMatcher;
@@ -217,16 +203,14 @@ class Config {
             ppm = DEFAULT_PPM;
           }
         }
-        return new DelayConfig(enabled, typeMatcher, methodMatcher, waitMode, ppm, maxDelayMillis);
+        return new DelayConfig(typeMatcher, methodMatcher, waitMode, ppm, maxDelayMillis);
       }
     }
 
     @Override
     public String toString() {
       return "DelayConfig{"
-          + "enabled="
-          + enabled
-          + ", typeMatcher="
+          + "typeMatcher="
           + typeMatcher
           + ", methodMatcher="
           + methodMatcher
@@ -241,20 +225,16 @@ class Config {
   }
 
   static class FailureConfig {
-    // TODO: Remove
-    final boolean enabled;
     final ElementMatcher<TypeDefinition> typeMatcher;
     final ElementMatcher<MethodDescription> methodMatcher;
     final long ppm;
     final Class<? extends Exception> exceptionClass;
 
     public FailureConfig(
-        boolean enabled,
         ElementMatcher<TypeDefinition> typeMatcher,
         ElementMatcher<MethodDescription> methodMatcher,
         long ppm,
         Class<? extends Exception> exceptionClass) {
-      this.enabled = enabled;
       this.typeMatcher = typeMatcher;
       this.methodMatcher = methodMatcher;
       this.ppm = ppm;
@@ -262,18 +242,12 @@ class Config {
     }
 
     public static class Builder {
-      private boolean enabled = false;
       private ElementMatcher<TypeDefinition> typeMatcher = ElementMatchers.none();
       private ElementMatcher<MethodDescription> methodMatcher = ElementMatchers.none();
       // The default value of this field will be set lazily.
       private Long ppm;
       private Integer percentage;
       private Class<? extends Exception> exceptionClass = RuntimeException.class;
-
-      public Builder setEnabled(boolean enabled) {
-        this.enabled = enabled;
-        return this;
-      }
 
       public Builder setTypeMatcher(ElementMatcher<TypeDefinition> typeMatcher) {
         this.typeMatcher = typeMatcher;
@@ -319,16 +293,14 @@ class Config {
             ppm = DEFAULT_PPM;
           }
         }
-        return new FailureConfig(enabled, typeMatcher, methodMatcher, ppm, exceptionClass);
+        return new FailureConfig(typeMatcher, methodMatcher, ppm, exceptionClass);
       }
     }
 
     @Override
     public String toString() {
       return "FailureConfig{"
-          + "enabled="
-          + enabled
-          + ", typeMatcher="
+          + "typeMatcher="
           + typeMatcher
           + ", methodMatcher="
           + methodMatcher

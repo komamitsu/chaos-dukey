@@ -12,14 +12,12 @@ Set `-javaagent` Java option to the downloaded JAR file with some parameters as 
 
 | Parameter                   | Description                                                                                                                       | Default value                |
 |-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------|------------------------------|
-| `delay.enabled`             | Specifies whether to inject delays, waiting for a fixed or random duration.                                                       | `false`                      |
 | `delay.typeNamePattern`     | [For delay injection] Type name pattern to filter classes and interfaces. Supports Java's regex format.                           | All types are targeted       |
 | `delay.methodNamePattern`   | [For delay injection] Method name pattern to filter methods. Supports Java's regex format.                                        | All methods are targeted     |
 | `delay.waitMode`            | [For delay injection] `RANDOM`: waits for random duration between 1 ms and `maxDelayMillis`. `FIXED`: waits for `maxDelayMillis`. | `RANDOM`                     |
 | `delay.ppm`                 | [For delay injection] Parts per million (ppm) chance that a delay injection occurs. Cannot be specified with `percentage`.        | 20000 ppm (2%)               |
 | `delay.percentage`          | [For delay injection] Percentage chance that a delay injection occurs. Cannot be specified with `ppm`.                            | 2% (20000 ppm)               |
 | `delay.maxDelayMillis`      | [For delay injection] Maximum delay in millis.                                                                                    | 500 ms                       |
-| `failure.enabled`           | Specifies whether to inject failures, throwing an exception.                                                                      | `false`                      |
 | `failure.typeNamePattern`   | [For failure injection] Type name pattern to filter classes and interfaces. Supports Java's regex format.                         | All types are effected       |
 | `failure.methodNamePattern` | [For failure injection] Method name pattern to filter methods. Supports Java's regex format.                                      | All methods are effected     |
 | `failure.exception`         | [For failure injection] Exception thrown from the target methods.                                                                 | `java.lang.RuntimeException` |
