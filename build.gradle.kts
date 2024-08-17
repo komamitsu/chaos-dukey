@@ -73,3 +73,5 @@ val integrationTest = task<Test>("integrationTest") {
     // jvmArgs("-javaagent:build/libs/${project.name}-${project.version}-all.jar=configFile=chaos-dukey.properties")
     jvmArgs("-javaagent:build/libs/${project.name}-${project.version}-all.jar=configFile=src/intTest/resources/chaos-dukey.properties")
 }
+
+tasks.check { dependsOn(integrationTest) }
