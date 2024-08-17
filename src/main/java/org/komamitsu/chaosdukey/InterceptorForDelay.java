@@ -1,8 +1,10 @@
 package org.komamitsu.chaosdukey;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
@@ -42,12 +44,13 @@ public class InterceptorForDelay {
   }
 
   @RuntimeType
-  public Object intercept(@SuperCall Callable<?> callable) throws Exception {
+  public Object intercept(@Origin Method origin, @SuperCall Callable<?> callable) throws Exception {
     if (random.nextLong(1000000) < config.ppm) {
       boolean delayBeforeInvocation = random.nextBoolean();
       if (delayBeforeInvocation) {
         if (debug) {
-          System.err.println("[Chaos-Dukey] Waiting before the target method invocation.");
+          System.err.printf(
+              "[Chaos-Dukey] Waiting before the target method invocation in `%s`.\n", origin);
         }
         waitForDelay();
       }
@@ -56,7 +59,8 @@ public class InterceptorForDelay {
 
       if (!delayBeforeInvocation) {
         if (debug) {
-          System.err.println("[Chaos-Dukey] Waiting after the target method invocation.");
+          System.err.printf(
+              "[Chaos-Dukey] Waiting after the target method invocation in `%s`.\n", origin);
         }
         waitForDelay();
       }
