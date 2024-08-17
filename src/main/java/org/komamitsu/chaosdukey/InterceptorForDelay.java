@@ -1,40 +1,36 @@
 package org.komamitsu.chaosdukey;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
 // This class needs to be public.
-public class ChaosDukeyInterceptor {
-  private final ThreadLocalRandom random = ThreadLocalRandom.current();
-
-  private final WaitMode waitMode;
-  private final long ppm;
-  private final int maxDelayMillis;
+public class InterceptorForDelay {
+  private final DelayConfig config;
   private final boolean debug;
 
-  enum WaitMode {
+  enum DelayWaitMode {
     FIXED,
     RANDOM;
   }
 
-  public ChaosDukeyInterceptor(WaitMode waitMode, long ppm, int maxDelayMillis, boolean debug) {
-    this.waitMode = waitMode;
-    this.ppm = ppm;
-    this.maxDelayMillis = maxDelayMillis;
+  public InterceptorForDelay(DelayConfig config, boolean debug) {
+    this.config = config;
     this.debug = debug;
   }
 
   void waitForDelay() throws InterruptedException {
     int durationMillis;
-    switch (waitMode) {
+    switch (config.waitMode) {
       case FIXED:
-        durationMillis = maxDelayMillis;
+        durationMillis = config.maxDelayMillis;
         break;
       case RANDOM:
-        durationMillis = random.nextInt(maxDelayMillis) + 1;
+        durationMillis = ThreadLocalRandom.current().nextInt(config.maxDelayMillis) + 1;
         break;
       default:
         throw new AssertionError("Shouldn't reach here");
@@ -47,12 +43,14 @@ public class ChaosDukeyInterceptor {
   }
 
   @RuntimeType
-  public Object intercept(@SuperCall Callable<?> callable) throws Exception {
-    if (random.nextLong(1000000) < ppm) {
-      boolean delayBeforeInvocation = random.nextBoolean();
+  public Object intercept(@Origin Method origin, @SuperCall Callable<?> callable) throws Exception {
+    if (ThreadLocalRandom.current().nextLong(1000000) < config.ppm) {
+      boolean delayBeforeInvocation = ThreadLocalRandom.current().nextBoolean();
+
       if (delayBeforeInvocation) {
         if (debug) {
-          System.err.println("[Chaos-Dukey] Waiting before the target method invocation.");
+          System.err.printf(
+              "[Chaos-Dukey] Waiting before the target method invocation in `%s`.\n", origin);
         }
         waitForDelay();
       }
@@ -61,7 +59,8 @@ public class ChaosDukeyInterceptor {
 
       if (!delayBeforeInvocation) {
         if (debug) {
-          System.err.println("[Chaos-Dukey] Waiting after the target method invocation.");
+          System.err.printf(
+              "[Chaos-Dukey] Waiting after the target method invocation in `%s`.\n", origin);
         }
         waitForDelay();
       }
