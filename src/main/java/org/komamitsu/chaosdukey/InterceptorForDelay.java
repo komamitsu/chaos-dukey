@@ -8,27 +8,28 @@ import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
 // This class needs to be public.
 public class InterceptorForDelay {
+  private final DelayConfig config;
+  private final boolean debug;
   private final ThreadLocalRandom random = ThreadLocalRandom.current();
-
-  private final Config config;
 
   enum DelayWaitMode {
     FIXED,
     RANDOM;
   }
 
-  public InterceptorForDelay(Config config) {
+  public InterceptorForDelay(DelayConfig config, boolean debug) {
     this.config = config;
+    this.debug = debug;
   }
 
   void waitForDelay() throws InterruptedException {
     int durationMillis;
-    switch (config.delayConfig.waitMode) {
+    switch (config.waitMode) {
       case FIXED:
-        durationMillis = config.delayConfig.maxDelayMillis;
+        durationMillis = config.maxDelayMillis;
         break;
       case RANDOM:
-        durationMillis = random.nextInt(config.delayConfig.maxDelayMillis) + 1;
+        durationMillis = random.nextInt(config.maxDelayMillis) + 1;
         break;
       default:
         throw new AssertionError("Shouldn't reach here");
@@ -42,10 +43,10 @@ public class InterceptorForDelay {
 
   @RuntimeType
   public Object intercept(@SuperCall Callable<?> callable) throws Exception {
-    if (random.nextLong(1000000) < config.delayConfig.ppm) {
+    if (random.nextLong(1000000) < config.ppm) {
       boolean delayBeforeInvocation = random.nextBoolean();
       if (delayBeforeInvocation) {
-        if (config.debug) {
+        if (debug) {
           System.err.println("[Chaos-Dukey] Waiting before the target method invocation.");
         }
         waitForDelay();
@@ -54,7 +55,7 @@ public class InterceptorForDelay {
       Object result = callable.call();
 
       if (!delayBeforeInvocation) {
-        if (config.debug) {
+        if (debug) {
           System.err.println("[Chaos-Dukey] Waiting after the target method invocation.");
         }
         waitForDelay();

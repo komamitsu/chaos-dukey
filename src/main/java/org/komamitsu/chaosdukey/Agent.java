@@ -30,7 +30,7 @@ public final class Agent {
     Config config = new Config.Loader().load(propertiesFromArguments(arguments));
 
     {
-      InterceptorForDelay interceptor = new InterceptorForDelay(config);
+      InterceptorForDelay interceptor = new InterceptorForDelay(config.delayConfig, config.debug);
       AgentBuilder agentBuilder =
           new AgentBuilder.Default()
               .type(config.delayConfig.typeMatcher)
@@ -45,7 +45,7 @@ public final class Agent {
       agentBuilder.installOn(instrumentation);
     }
     {
-      InterceptorForFailure interceptor = new InterceptorForFailure(config);
+      InterceptorForFailure interceptor = new InterceptorForFailure(config.failureConfig, config.debug);
       AgentBuilder agentBuilder =
           new AgentBuilder.Default()
               .type(config.failureConfig.typeMatcher)
