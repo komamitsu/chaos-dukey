@@ -69,9 +69,10 @@ val integrationTest = task<Test>("integrationTest") {
 
     useJUnitPlatform()
 
-    // FIXME
-    // jvmArgs("-javaagent:build/libs/${project.name}-${project.version}-all.jar=configFile=chaos-dukey.properties")
-    jvmArgs("-javaagent:build/libs/${project.name}-${project.version}-all.jar=configFile=src/intTest/resources/chaos-dukey.properties")
+    val configFile = project.layout.buildDirectory.dir("resources").get()
+            .dir("intTest").file("chaos-dukey.properties").asFile.absoluteFile
+
+    jvmArgs("-javaagent:build/libs/${project.name}-${project.version}-all.jar=configFile=${configFile}")
 }
 
 tasks.check { dependsOn(integrationTest) }
