@@ -12,7 +12,6 @@ import net.bytebuddy.implementation.bind.annotation.SuperCall;
 public class InterceptorForDelay {
   private final DelayConfig config;
   private final boolean debug;
-  private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
   enum DelayWaitMode {
     FIXED,
@@ -31,7 +30,7 @@ public class InterceptorForDelay {
         durationMillis = config.maxDelayMillis;
         break;
       case RANDOM:
-        durationMillis = random.nextInt(config.maxDelayMillis) + 1;
+        durationMillis = ThreadLocalRandom.current().nextInt(config.maxDelayMillis) + 1;
         break;
       default:
         throw new AssertionError("Shouldn't reach here");
@@ -45,8 +44,9 @@ public class InterceptorForDelay {
 
   @RuntimeType
   public Object intercept(@Origin Method origin, @SuperCall Callable<?> callable) throws Exception {
-    if (random.nextLong(1000000) < config.ppm) {
-      boolean delayBeforeInvocation = random.nextBoolean();
+    if (ThreadLocalRandom.current().nextLong(1000000) < config.ppm) {
+      boolean delayBeforeInvocation = ThreadLocalRandom.current().nextBoolean();
+
       if (delayBeforeInvocation) {
         if (debug) {
           System.err.printf(

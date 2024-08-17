@@ -51,6 +51,6 @@ class InterceptorForFailureTest {
     for (int i = 0; i < n; i++) {
       assertThrows(IOException.class, () -> interceptor.intercept(origin, callable));
     }
-    verify(callable, never()).call();
+    verify(callable, atLeast(10)).call();
   }
 }

@@ -11,7 +11,6 @@ import net.bytebuddy.implementation.bind.annotation.SuperCall;
 public class InterceptorForFailure {
   private final FailureConfig config;
   private final boolean debug;
-  private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
   public InterceptorForFailure(FailureConfig config, boolean debug) {
     this.config = config;
@@ -20,10 +19,24 @@ public class InterceptorForFailure {
 
   @RuntimeType
   public Object intercept(@Origin Method origin, @SuperCall Callable<?> callable) throws Exception {
-    if (random.nextLong(1000000) < config.ppm) {
-      System.err.printf(
-          "[Chaos-Dukey] Throwing an exception before the target method invocation in `%s`.\n",
-          origin);
+    if (ThreadLocalRandom.current().nextLong(1000000) < config.ppm) {
+      boolean delayBeforeInvocation = ThreadLocalRandom.current().nextBoolean();
+      if (delayBeforeInvocation) {
+        if (debug) {
+          System.err.printf(
+              "[Chaos-Dukey] Throwing an exception before the target method invocation in `%s`.\n",
+              origin);
+        }
+        throw config.exceptionClass.newInstance();
+      }
+
+      callable.call();
+
+      if (debug) {
+        System.err.printf(
+            "[Chaos-Dukey] Throwing an exception after the target method invocation in `%s`.\n",
+            origin);
+      }
       throw config.exceptionClass.newInstance();
     } else {
       return callable.call();
