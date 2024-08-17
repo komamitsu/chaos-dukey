@@ -45,7 +45,8 @@ public final class Agent {
       agentBuilder.installOn(instrumentation);
     }
     {
-      InterceptorForFailure interceptor = new InterceptorForFailure(config.failureConfig, config.debug);
+      InterceptorForFailure interceptor =
+          new InterceptorForFailure(config.failureConfig, config.debug);
       AgentBuilder agentBuilder =
           new AgentBuilder.Default()
               .type(config.failureConfig.typeMatcher)

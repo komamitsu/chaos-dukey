@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Consumer;
-
 import net.bytebuddy.matcher.ElementMatchers;
 
 class Config {
