@@ -1,12 +1,10 @@
-package org.komamitsu;
+package org.komamitsu.example;
 
-import org.komamitsu.db.account.AccountDb;
-import org.komamitsu.jobqueue.Job;
-import org.komamitsu.jobqueue.JobQueue;
+import org.komamitsu.example.db.account.AccountDb;
+import org.komamitsu.example.jobqueue.Job;
+import org.komamitsu.example.jobqueue.JobQueue;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -49,6 +47,7 @@ public class Main {
       worker1Future.get();
       worker2Future.get();
 
+      // FIXME: Use slf4j.
       // The balance should be 250.
       System.out.printf("The balance of Account A: %d\n", accountDb.getBalance("A"));
     }

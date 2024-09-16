@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("application")
 }
 
 group = "org.example"
@@ -18,4 +19,9 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+application {
+    mainClass = "org.komamitsu.example.Main"
+    applicationDefaultJvmArgs = listOf("-javaagent:/home/komamitsu/Downloads/chaos-dukey-1.4.0-all.jar=configFile=/home/komamitsu/src/chaos-dukey/example/chaos-dukey.properties")
 }

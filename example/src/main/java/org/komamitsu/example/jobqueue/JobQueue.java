@@ -1,4 +1,4 @@
-package org.komamitsu.jobqueue;
+package org.komamitsu.example.jobqueue;
 
 import java.time.Duration;
 import java.time.Instant;

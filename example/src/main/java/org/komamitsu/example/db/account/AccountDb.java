@@ -1,6 +1,6 @@
-package org.komamitsu.db.account;
+package org.komamitsu.example.db.account;
 
-import org.komamitsu.Tuple;
+import org.komamitsu.example.Tuple;
 
 import java.util.HashMap;
 import java.util.Map;
