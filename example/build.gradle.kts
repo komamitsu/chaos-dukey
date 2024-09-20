@@ -1,9 +1,8 @@
 plugins {
     id("java")
-    id("application")
 }
 
-group = "org.example"
+group = "org.komamitsu"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -15,13 +14,14 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("com.google.googlejavaformat:google-java-format:1.23.0")
+    implementation("org.slf4j:slf4j-simple:2.0.16")
 }
 
 tasks.test {
     useJUnitPlatform()
-}
-
-application {
-    mainClass = "org.komamitsu.example.Main"
-    applicationDefaultJvmArgs = listOf("-javaagent:/home/komamitsu/Downloads/chaos-dukey-1.4.0-all.jar=configFile=/home/komamitsu/src/chaos-dukey/example/chaos-dukey.properties")
+    jvmArgs(
+        "-javaagent:/home/komamitsu/Downloads/chaos-dukey-1.4.0-all.jar=configFile=/home/komamitsu/src/chaos-dukey/example/chaos-dukey.properties",
+//        "-Dorg.slf4j.simpleLogger.showDateTime=true",
+//        "-Dorg.slf4j.simpleLogger.dateTimeFormat='yyyy-MM-dd HH:mm:ss:SSS Z'"
+    )
 }

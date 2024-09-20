@@ -1,8 +1,8 @@
-package org.komamitsu.example;
+package org.komamitsu.example.jobqueue;
 
+import org.junit.jupiter.api.Test;
+import org.komamitsu.example.Tuple;
 import org.komamitsu.example.db.account.AccountDb;
-import org.komamitsu.example.jobqueue.Job;
-import org.komamitsu.example.jobqueue.JobQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,10 +11,13 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.*;
 
-public class Main {
-  private static final Logger logger = LoggerFactory.getLogger(Main.class);
+import static org.junit.jupiter.api.Assertions.*;
 
-  public static void main(String[] args) throws ExecutionException, InterruptedException {
+class JobQueueTest {
+  private static final Logger logger = LoggerFactory.getLogger(JobQueueTest.class);
+
+  @Test
+  void test() throws ExecutionException, InterruptedException {
     // Create an Account DB with Account A, who has an initial balance of 200.
     AccountDb accountDb = new AccountDb(Tuple.of("A", 200L));
 
@@ -53,6 +56,8 @@ public class Main {
 
       // The balance should be 250.
       logger.info("The balance of Account A: {}", accountDb.getBalance("A"));
+
+      assertEquals(250, accountDb.getBalance("A"));
     }
   }
 }
