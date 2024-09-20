@@ -20,8 +20,6 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
     jvmArgs(
-        "-javaagent:/home/komamitsu/Downloads/chaos-dukey-1.4.0-all.jar=configFile=/home/komamitsu/src/chaos-dukey/example/chaos-dukey.properties",
-//        "-Dorg.slf4j.simpleLogger.showDateTime=true",
-//        "-Dorg.slf4j.simpleLogger.dateTimeFormat='yyyy-MM-dd HH:mm:ss:SSS Z'"
+        "-javaagent:/home/komamitsu/Downloads/chaos-dukey-1.4.0-all.jar=configFile=/home/komamitsu/src/chaos-dukey/example/chaos-dukey.properties"
     )
 }
