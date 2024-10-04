@@ -1,5 +1,7 @@
 # Chaos Dukey
 
+<img alt="Logo Image" src="chaos-dukey.png" width="64" height="64">
+
 This is a Java agent to inject chaos delays and/or failures into specific Java classes and methods.
 
 ## Download the JAR file
