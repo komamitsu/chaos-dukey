@@ -20,6 +20,6 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
     jvmArgs(
-        "-javaagent:/home/komamitsu/Downloads/chaos-dukey-1.4.0-all.jar=configFile=/home/komamitsu/src/chaos-dukey/example/chaos-dukey.properties"
+        "-javaagent:${rootDir}/chaos-dukey-all.jar=configFile=${rootDir}/chaos-dukey.properties"
     )
 }

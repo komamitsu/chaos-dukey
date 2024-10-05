@@ -26,5 +26,13 @@ jobs:
       with:
         name: gradle_test_reports
         path: build/reports/tests/test
-    - name: Test example with Chaos Dukey
-      run: cd example && ! ./gradlew test
+    - name: Build the shadow jar for `example` project
+      run: |
+        ./gradlew shadowJar &&
+        cd example &&
+        ln -s ../build/libs/chaos-dukey-*-all.jar chaos-dukey-all.jar
+    - name: Testing example with Chaos Dukey should fail
+      run: |
+        cd example &&
+        ! ./gradlew test &&
+        grep 'expected: &lt;250&gt; but was: &lt;300&gt;' build/reports/tests/test/classes/org.komamitsu.example.jobqueue.JobQueueTest.html
