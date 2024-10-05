@@ -26,4 +26,5 @@ jobs:
       with:
         name: gradle_test_reports
         path: build/reports/tests/test
-
+    - name: Test example with Chaos Dukey
+      run: cd example && ! ./gradlew test
