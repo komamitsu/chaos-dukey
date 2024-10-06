@@ -31,9 +31,16 @@ jobs:
         path: build/reports/tests/test
     - name: Test `example` project with Chaos Dukey and confirm it fails
       if: ${{ matrix.java_project == 21 }}
+      env:
+        CHAOS_DUKEY_ENABLED: true
       run: |
         ./gradlew shadowJar &&
         cd example &&
         ln -s ../build/libs/chaos-dukey-*-all.jar chaos-dukey-all.jar &&
         ! ./gradlew test &&
         grep 'expected: &lt;250&gt; but was: &lt;300&gt;' build/reports/tests/test/classes/org.komamitsu.example.jobqueue.JobQueueTest.html
+    - name: Test `example` project without Chaos Dukey and confirm it succeeds
+      if: ${{ matrix.java_project == 21 }}
+      run: |
+        cd example &&
+        ./gradlew test

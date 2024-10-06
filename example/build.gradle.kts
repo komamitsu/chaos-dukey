@@ -19,7 +19,9 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
-    jvmArgs(
-        "-javaagent:${rootDir}/chaos-dukey-all.jar=configFile=${rootDir}/chaos-dukey.properties"
-    )
+    if (System.getenv("CHAOS_DUKEY_ENABLED") == "true") {
+        jvmArgs(
+            "-javaagent:${rootDir}/chaos-dukey-all.jar=configFile=${rootDir}/chaos-dukey.properties"
+        )
+    }
 }
