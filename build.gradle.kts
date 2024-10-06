@@ -1,7 +1,12 @@
 plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("com.diffplug.spotless") version "6.13.0"
+    if (JavaVersion.current().isJava11Compatible) {
+        id("com.diffplug.spotless") version "6.25.0"
+    }
+    else {
+        id("com.diffplug.spotless") version "6.13.0"
+    }
 }
 
 group = "org.komamitsu"
