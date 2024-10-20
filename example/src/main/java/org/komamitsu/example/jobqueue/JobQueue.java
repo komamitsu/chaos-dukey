@@ -5,14 +5,14 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class JobQueue {
   private static final Logger logger = LoggerFactory.getLogger(JobQueue.class);
   private final Duration leaseDuration;
-  private final List<Job> jobs = new ArrayList<>();
+  private final List<Job> jobs = new CopyOnWriteArrayList<>();
 
   public JobQueue(Duration leaseDuration) {
     this.leaseDuration = leaseDuration;
@@ -41,5 +41,9 @@ public class JobQueue {
       logger.warn("The target job wasn't found.");
     }
     logger.debug("Finished the job. job:{}", job);
+  }
+
+  public int remainingSize() {
+    return jobs.size();
   }
 }
