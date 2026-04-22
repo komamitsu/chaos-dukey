@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.6"
     if (JavaVersion.current().isJava11Compatible) {
         id("com.diffplug.spotless") version "6.25.0"
     }
