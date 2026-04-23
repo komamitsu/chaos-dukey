@@ -12,7 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java_version: [ 8, 11, 17, 21 ]
+        include:
+          - java_version: 8
+            gradle_version: "8.14.4"
+          - java_version: 11
+            gradle_version: "8.14.4"
+          - java_version: 17
+            gradle_version: "9.4.1"
+          - java_version: 21
+            gradle_version: "9.4.1"
     steps:
     - uses: actions/checkout@v6
     - name: Set up JDK ${{ matrix.java_version }}
@@ -22,9 +30,11 @@ jobs:
         java-version: ${{ matrix.java_version }}
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v6
+      with:
+        gradle-version: ${{ matrix.gradle_version }}
 
     - name: Run checks
-      run: ./gradlew check
+      run: gradle check
     - name: Upload Gradle test reports
       if: always()
       uses: actions/upload-artifact@v7
@@ -36,13 +46,13 @@ jobs:
       env:
         CHAOS_DUKEY_ENABLED: true
       run: |
-        ./gradlew shadowJar &&
+        gradle shadowJar &&
         cd example &&
         ln -s ../build/libs/chaos-dukey-*-all.jar chaos-dukey-all.jar &&
-        ! ./gradlew test &&
-        grep 'expected: &lt;250&gt; but was: &lt;300&gt;' build/reports/tests/test/classes/org.komamitsu.example.jobqueue.JobQueueTest.html
+        ! gradle test &&
+        grep -r 'expected: &lt;250&gt; but was: &lt;300&gt;' build/reports/tests/test/
     - name: Test `example` project without Chaos Dukey and confirm it succeeds
       if: ${{ matrix.java_version == 21 }}
       run: |
         cd example &&
-        ./gradlew test
+        gradle test
