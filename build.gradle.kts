@@ -1,10 +1,15 @@
 plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.6"
-    if (JavaVersion.current().isJava11Compatible) {
-        id("com.diffplug.spotless") version "6.25.0"
-    }
-    else {
+    when {
+    // JDK 21+
+    JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_21) ->
+        id("com.diffplug.spotless") version "8.4.0"
+    // JDK 11, 17
+    JavaVersion.current().isJava11Compatible ->
+        id("com.diffplug.spotless") version "7.2.1"
+    // JDK 8
+    else ->
         id("com.diffplug.spotless") version "6.13.0"
     }
 }
