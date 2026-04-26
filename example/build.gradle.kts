@@ -16,7 +16,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("com.google.googlejavaformat:google-java-format:1.35.0")
-    implementation("org.slf4j:slf4j-simple:2.0.16")
+    implementation("org.slf4j:slf4j-simple:2.0.17")
 }
 
 tasks.test {
