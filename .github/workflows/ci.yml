@@ -21,6 +21,9 @@ jobs:
             gradle_version: "9.4.1"
           - java_version: 21
             gradle_version: "9.4.1"
+          - java_version: 25
+            gradle_version: "9.4.1"
+
     steps:
     - uses: actions/checkout@v6
     - name: Set up JDK ${{ matrix.java_version }}
@@ -42,7 +45,7 @@ jobs:
         name: gradle_test_reports_java_${{ matrix.java_version }}
         path: build/reports/tests/test
     - name: Test `example` project with Chaos Dukey and confirm it fails
-      if: ${{ matrix.java_version == 21 }}
+      if: ${{ matrix.java_version == 21 || matrix.java_version == 25 }}
       env:
         CHAOS_DUKEY_ENABLED: true
       run: |
@@ -52,7 +55,7 @@ jobs:
         ! gradle test &&
         grep -r 'expected: &lt;250&gt; but was: &lt;300&gt;' build/reports/tests/test/
     - name: Test `example` project without Chaos Dukey and confirm it succeeds
-      if: ${{ matrix.java_version == 21 }}
+      if: ${{ matrix.java_version == 21 || matrix.java_version == 25 }}
       run: |
         cd example &&
         gradle test

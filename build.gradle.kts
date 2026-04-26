@@ -1,10 +1,15 @@
 plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.6"
-    if (JavaVersion.current().isJava11Compatible) {
-        id("com.diffplug.spotless") version "6.25.0"
-    }
-    else {
+    when {
+    // JDK 21+
+    JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_21) ->
+        id("com.diffplug.spotless") version "8.4.0"
+    // JDK 11, 17
+    JavaVersion.current().isJava11Compatible ->
+        id("com.diffplug.spotless") version "7.2.1"
+    // JDK 8
+    else ->
         id("com.diffplug.spotless") version "6.13.0"
     }
 }
@@ -17,10 +22,10 @@ repositories {
 }
 
 dependencies {
-    implementation("net.bytebuddy:byte-buddy:1.14.12")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    implementation("net.bytebuddy:byte-buddy:1.18.8")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.14.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.14.3")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.14.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.mockito:mockito-core:4.11.0")
     testImplementation("org.mockito:mockito-junit-jupiter:4.11.0")
@@ -60,7 +65,7 @@ val intTestRuntimeOnly by configurations.getting
 configurations["intTestRuntimeOnly"].extendsFrom(configurations.runtimeOnly.get())
 
 dependencies {
-    intTestImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    intTestImplementation("org.junit.jupiter:junit-jupiter:5.14.3")
     intTestRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
