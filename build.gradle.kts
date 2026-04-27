@@ -23,9 +23,9 @@ repositories {
 
 dependencies {
     implementation("net.bytebuddy:byte-buddy:1.18.8")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.14.3")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.14.3")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.14.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:6.0.3")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.mockito:mockito-core:4.11.0")
     testImplementation("org.mockito:mockito-junit-jupiter:4.11.0")
@@ -65,7 +65,7 @@ val intTestRuntimeOnly by configurations.getting
 configurations["intTestRuntimeOnly"].extendsFrom(configurations.runtimeOnly.get())
 
 dependencies {
-    intTestImplementation("org.junit.jupiter:junit-jupiter:5.14.3")
+    intTestImplementation("org.junit.jupiter:junit-jupiter:6.0.3")
     intTestRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
