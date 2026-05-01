@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("com.gradleup.shadow") version "8.3.6"
+    id("com.gradleup.shadow") version "9.4.1"
     when {
     // JDK 21+
     JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_21) ->
