@@ -18,7 +18,7 @@ jobs:
         tag_name: ${{ github.ref }}
         release_name: ${{ github.ref }}
 
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Set up Apache Maven Central
       uses: actions/setup-java@v5
       with:
